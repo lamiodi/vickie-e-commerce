@@ -1,16 +1,15 @@
 import express from 'express';
-import multer from 'multer';
 import path from 'path';
 import { pool } from '../db/pool.js';
-import { 
-  upload, 
-  processImage, 
-  processVideo, 
-  cleanupFile, 
+import {
+  upload,
+  processImage,
+  processVideo,
+  cleanupFile,
   getFileType,
   validateFileSize,
   MAX_IMAGE_SIZE,
-  MAX_VIDEO_SIZE
+  MAX_VIDEO_SIZE,
 } from '../services/media.js';
 import { logger } from '../utils/logger.js';
 import { requireAuth } from '../middleware/auth.js';
@@ -18,7 +17,8 @@ import { requireAuth } from '../middleware/auth.js';
 const router = express.Router();
 
 // Upload media for a product
-router.post('/products/:productId/media', 
+router.post(
+  '/products/:productId/media',
   requireAuth,
   upload.array('media', 10),
   async (req, res) => {
@@ -30,15 +30,12 @@ router.post('/products/:productId/media',
       if (!files || files.length === 0) {
         return res.status(400).json({
           error: 'no_files',
-          message: 'No files uploaded'
+          message: 'No files uploaded',
         });
       }
 
       // Verify product exists
-      const productResult = await pool.query(
-        'SELECT id FROM products WHERE id = $1',
-        [productId]
-      );
+      const productResult = await pool.query('SELECT id FROM products WHERE id = $1', [productId]);
 
       if (productResult.rows.length === 0) {
         // Clean up uploaded files
@@ -47,7 +44,7 @@ router.post('/products/:productId/media',
         }
         return res.status(404).json({
           error: 'product_not_found',
-          message: 'Product not found'
+          message: 'Product not found',
         });
       }
 
@@ -65,13 +62,13 @@ router.post('/products/:productId/media',
             if (fileType === 'image') {
               validateFileSize(file, MAX_IMAGE_SIZE);
               processedResult = await processImage(file.path);
-              
+
               // Clean up original file after processing
               await cleanupFile(file.path);
             } else if (fileType === 'video') {
               validateFileSize(file, MAX_VIDEO_SIZE);
               processedResult = await processVideo(file.path);
-              
+
               // Clean up original file after processing
               await cleanupFile(file.path);
             } else {
@@ -110,12 +107,11 @@ router.post('/products/:productId/media',
                 altText || null,
                 caption || null,
                 nextOrder,
-                req.user.id
+                req.user.id,
               ]
             );
 
             uploadedMedia.push(insertResult.rows[0]);
-
           } catch (error) {
             logger.error(`Failed to process file ${file.originalname}:`, error);
             // Clean up any partially processed files
@@ -129,12 +125,14 @@ router.post('/products/:productId/media',
 
         await client.query('COMMIT');
 
-        logger.info(`Successfully uploaded ${uploadedMedia.length} media files for product ${productId}`);
+        logger.info(
+          `Successfully uploaded ${uploadedMedia.length} media files for product ${productId}`
+        );
 
         res.json({
           success: true,
           uploaded: uploadedMedia.length,
-          media: uploadedMedia.map(media => ({
+          media: uploadedMedia.map((media) => ({
             id: media.id,
             mediaType: media.media_type,
             filePath: media.file_path,
@@ -142,29 +140,27 @@ router.post('/products/:productId/media',
             displayOrder: media.display_order,
             width: media.width,
             height: media.height,
-            duration: media.duration
-          }))
+            duration: media.duration,
+          })),
         });
-
       } catch (error) {
         await client.query('ROLLBACK');
         throw error;
       } finally {
         client.release();
       }
-
     } catch (error) {
       logger.error('Media upload failed:', error);
       res.status(500).json({
         error: 'upload_failed',
-        message: 'Failed to upload media files'
+        message: 'Failed to upload media files',
       });
     }
   }
 );
 
 // Get media for a product
-router.get('/products/:productId/media', authMiddleware, async (req, res) => {
+router.get('/products/:productId/media', requireAuth, async (req, res) => {
   try {
     const { productId } = req.params;
     const { type } = req.query;
@@ -177,21 +173,21 @@ router.get('/products/:productId/media', authMiddleware, async (req, res) => {
       LEFT JOIN users u ON pm.uploaded_by = u.id
       WHERE pm.product_id = $1 AND pm.is_active = true
     `;
-    
+
     const params = [productId];
-    
+
     if (type) {
       query += ` AND pm.media_type = $2`;
       params.push(type);
     }
-    
+
     query += ` ORDER BY pm.display_order ASC`;
 
     const result = await pool.query(query, params);
 
     res.json({
       success: true,
-      media: result.rows.map(media => ({
+      media: result.rows.map((media) => ({
         id: media.id,
         mediaType: media.media_type,
         filePath: media.file_path,
@@ -206,21 +202,20 @@ router.get('/products/:productId/media', authMiddleware, async (req, res) => {
         displayOrder: media.display_order,
         isPrimary: media.is_primary,
         uploadedAt: media.created_at,
-        uploadedBy: media.uploaded_by_name
-      }))
+        uploadedBy: media.uploaded_by_name,
+      })),
     });
-
   } catch (error) {
     logger.error('Failed to fetch product media:', error);
     res.status(500).json({
       error: 'fetch_failed',
-      message: 'Failed to fetch product media'
+      message: 'Failed to fetch product media',
     });
   }
 });
 
 // Update media metadata
-router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
+router.patch('/media/:mediaId', requireAuth, async (req, res) => {
   try {
     const { mediaId } = req.params;
     const { altText, caption, displayOrder, isPrimary } = req.body;
@@ -253,7 +248,7 @@ router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
           'SELECT product_id FROM product_media WHERE id = $1',
           [mediaId]
         );
-        
+
         if (primaryResult.rows.length > 0) {
           const productId = primaryResult.rows[0].product_id;
           await pool.query(
@@ -262,7 +257,7 @@ router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
           );
         }
       }
-      
+
       updates.push(`is_primary = $${paramIndex}`);
       params.push(isPrimary);
       paramIndex++;
@@ -271,7 +266,7 @@ router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
     if (updates.length === 0) {
       return res.status(400).json({
         error: 'no_updates',
-        message: 'No valid fields to update'
+        message: 'No valid fields to update',
       });
     }
 
@@ -286,7 +281,7 @@ router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         error: 'media_not_found',
-        message: 'Media not found'
+        message: 'Media not found',
       });
     }
 
@@ -294,20 +289,19 @@ router.patch('/media/:mediaId', authMiddleware, async (req, res) => {
 
     res.json({
       success: true,
-      media: result.rows[0]
+      media: result.rows[0],
     });
-
   } catch (error) {
     logger.error('Failed to update media:', error);
     res.status(500).json({
       error: 'update_failed',
-      message: 'Failed to update media'
+      message: 'Failed to update media',
     });
   }
 });
 
 // Reorder media for a product
-router.post('/products/:productId/media/reorder', authMiddleware, async (req, res) => {
+router.post('/products/:productId/media/reorder', requireAuth, async (req, res) => {
   try {
     const { productId } = req.params;
     const { mediaOrder } = req.body;
@@ -315,7 +309,7 @@ router.post('/products/:productId/media/reorder', authMiddleware, async (req, re
     if (!Array.isArray(mediaOrder) || mediaOrder.length === 0) {
       return res.status(400).json({
         error: 'invalid_order',
-        message: 'Media order must be a non-empty array'
+        message: 'Media order must be a non-empty array',
       });
     }
 
@@ -328,7 +322,7 @@ router.post('/products/:productId/media/reorder', authMiddleware, async (req, re
     if (mediaResult.rows.length !== mediaOrder.length) {
       return res.status(400).json({
         error: 'invalid_media_ids',
-        message: 'Some media IDs are invalid or do not belong to this product'
+        message: 'Some media IDs are invalid or do not belong to this product',
       });
     }
 
@@ -350,27 +344,25 @@ router.post('/products/:productId/media/reorder', authMiddleware, async (req, re
 
       res.json({
         success: true,
-        message: 'Media order updated successfully'
+        message: 'Media order updated successfully',
       });
-
     } catch (error) {
       await client.query('ROLLBACK');
       throw error;
     } finally {
       client.release();
     }
-
   } catch (error) {
     logger.error('Failed to reorder media:', error);
     res.status(500).json({
       error: 'reorder_failed',
-      message: 'Failed to reorder media'
+      message: 'Failed to reorder media',
     });
   }
 });
 
 // Delete media
-router.delete('/media/:mediaId', authMiddleware, async (req, res) => {
+router.delete('/media/:mediaId', requireAuth, async (req, res) => {
   try {
     const { mediaId } = req.params;
 
@@ -383,7 +375,7 @@ router.delete('/media/:mediaId', authMiddleware, async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({
         error: 'media_not_found',
-        message: 'Media not found'
+        message: 'Media not found',
       });
     }
 
@@ -391,14 +383,13 @@ router.delete('/media/:mediaId', authMiddleware, async (req, res) => {
 
     res.json({
       success: true,
-      message: 'Media deleted successfully'
+      message: 'Media deleted successfully',
     });
-
   } catch (error) {
     logger.error('Failed to delete media:', error);
     res.status(500).json({
       error: 'delete_failed',
-      message: 'Failed to delete media'
+      message: 'Failed to delete media',
     });
   }
 });

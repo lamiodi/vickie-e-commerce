@@ -21,7 +21,7 @@ async function ensureUploadDirectories() {
     UPLOAD_DIR,
     path.join(UPLOAD_DIR, 'images'),
     path.join(UPLOAD_DIR, 'videos'),
-    path.join(UPLOAD_DIR, 'thumbnails')
+    path.join(UPLOAD_DIR, 'thumbnails'),
   ];
 
   for (const dir of dirs) {
@@ -38,34 +38,37 @@ async function ensureUploadDirectories() {
 const storage = multer.diskStorage({
   destination: async (req, file, cb) => {
     await ensureUploadDirectories();
-    
+
     let uploadPath = UPLOAD_DIR;
     if (ALLOWED_IMAGE_TYPES.includes(file.mimetype)) {
       uploadPath = path.join(UPLOAD_DIR, 'images');
     } else if (ALLOWED_VIDEO_TYPES.includes(file.mimetype)) {
       uploadPath = path.join(UPLOAD_DIR, 'videos');
     }
-    
+
     cb(null, uploadPath);
   },
   filename: (req, file, cb) => {
     const uniqueName = `${uuidv4()}${path.extname(file.originalname)}`;
     cb(null, uniqueName);
-  }
+  },
 });
 
 // File filter function
 function fileFilter(req, file, cb) {
   const allowedTypes = [...ALLOWED_IMAGE_TYPES, ...ALLOWED_VIDEO_TYPES];
-  
+
   if (!allowedTypes.includes(file.mimetype)) {
-    return cb(new Error(`Invalid file type: ${file.mimetype}. Allowed types: ${allowedTypes.join(', ')}`), false);
+    return cb(
+      new Error(`Invalid file type: ${file.mimetype}. Allowed types: ${allowedTypes.join(', ')}`),
+      false
+    );
   }
 
   // Additional security check for file extensions
   const ext = path.extname(file.originalname).toLowerCase();
   const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.mp4', '.webm'];
-  
+
   if (!allowedExtensions.includes(ext)) {
     return cb(new Error(`Invalid file extension: ${ext}`), false);
   }
@@ -79,8 +82,8 @@ export const upload = multer({
   fileFilter: fileFilter,
   limits: {
     fileSize: Math.max(MAX_IMAGE_SIZE, MAX_VIDEO_SIZE),
-    files: 10 // Maximum 10 files per request
-  }
+    files: 10, // Maximum 10 files per request
+  },
 });
 
 // Image processing functions
@@ -91,7 +94,7 @@ export async function processImage(filePath, options = {}) {
       maxHeight = 1080,
       quality = 85,
       format = 'webp',
-      generateThumbnail = true
+      generateThumbnail = true,
     } = options;
 
     const processedFileName = `${uuidv4()}_processed.${format}`;
@@ -105,7 +108,7 @@ export async function processImage(filePath, options = {}) {
     // Resize if needed
     pipeline = pipeline.resize(maxWidth, maxHeight, {
       fit: 'inside',
-      withoutEnlargement: true
+      withoutEnlargement: true,
     });
 
     // Apply format and quality settings
@@ -123,10 +126,8 @@ export async function processImage(filePath, options = {}) {
     if (generateThumbnail) {
       const thumbnailFileName = `${uuidv4()}_thumb.${format}`;
       thumbnailPath = path.join(UPLOAD_DIR, 'thumbnails', thumbnailFileName);
-      
-      await sharp(processedFilePath)
-        .resize(300, 300, { fit: 'cover' })
-        .toFile(thumbnailPath);
+
+      await sharp(processedFilePath).resize(300, 300, { fit: 'cover' }).toFile(thumbnailPath);
     }
 
     // Get image metadata
@@ -138,9 +139,8 @@ export async function processImage(filePath, options = {}) {
       width: metadata.width,
       height: metadata.height,
       size: (await fs.stat(processedFilePath)).size,
-      format: metadata.format
+      format: metadata.format,
     };
-
   } catch (error) {
     logger.error('Image processing failed:', error);
     throw new Error(`Image processing failed: ${error.message}`);
@@ -154,7 +154,7 @@ export async function processVideo(filePath, options = {}) {
       maxWidth = 1920,
       maxHeight = 1080,
       generateThumbnail = true,
-      extractDuration = true
+      // extractDuration = true,
     } = options;
 
     const processedFileName = `${uuidv4()}_processed.mp4`;
@@ -162,7 +162,7 @@ export async function processVideo(filePath, options = {}) {
 
     // Get video metadata first
     const metadata = await getVideoMetadata(filePath);
-    
+
     // Check duration limit (10 minutes)
     if (metadata.duration > 600) {
       throw new Error('Video duration exceeds maximum limit of 10 minutes');
@@ -189,14 +189,14 @@ export async function processVideo(filePath, options = {}) {
     if (generateThumbnail) {
       const thumbnailFileName = `${uuidv4()}_thumb.jpg`;
       thumbnailPath = path.join(UPLOAD_DIR, 'thumbnails', thumbnailFileName);
-      
+
       await new Promise((resolve, reject) => {
         ffmpeg(processedFilePath)
           .screenshots({
             timestamps: ['10%'],
             filename: path.basename(thumbnailPath),
             folder: path.dirname(thumbnailPath),
-            size: '640x360'
+            size: '640x360',
           })
           .on('end', resolve)
           .on('error', reject);
@@ -212,9 +212,8 @@ export async function processVideo(filePath, options = {}) {
       height: processedMetadata.height,
       duration: processedMetadata.duration,
       size: (await fs.stat(processedFilePath)).size,
-      format: 'mp4'
+      format: 'mp4',
     };
-
   } catch (error) {
     logger.error('Video processing failed:', error);
     throw new Error(`Video processing failed: ${error.message}`);
@@ -230,13 +229,13 @@ function getVideoMetadata(filePath) {
         return;
       }
 
-      const videoStream = metadata.streams.find(stream => stream.codec_type === 'video');
-      
+      const videoStream = metadata.streams.find((stream) => stream.codec_type === 'video');
+
       resolve({
         width: videoStream?.width || 0,
         height: videoStream?.height || 0,
         duration: Math.floor(metadata.format.duration || 0),
-        format: metadata.format.format_name
+        format: metadata.format.format_name,
       });
     });
   });
@@ -285,7 +284,7 @@ export function getFileExtension(mimeType) {
     'image/png': '.png',
     'image/webp': '.webp',
     'video/mp4': '.mp4',
-    'video/webm': '.webm'
+    'video/webm': '.webm',
   };
   return mimeToExt[mimeType] || '.tmp';
 }

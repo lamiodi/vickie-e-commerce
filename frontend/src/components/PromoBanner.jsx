@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "./icons"
+import { ArrowRightIcon } from './Icons';
 
 export function PromoBanner() {
   return (
@@ -7,7 +7,11 @@ export function PromoBanner() {
         <div className="relative py-16 md:py-24">
           {/* Background Image */}
           <div className="absolute inset-0 opacity-60">
-            <img src="/snowy-mountain-peak-dramatic-landscape.jpg" alt="" className="w-full h-full object-cover" />
+            <img
+              src="/snowy-mountain-peak-dramatic-landscape.jpg"
+              alt=""
+              className="w-full h-full object-cover"
+            />
           </div>
 
           {/* Content */}
@@ -33,5 +37,5 @@ export function PromoBanner() {
         </div>
       </div>
     </section>
-  )
+  );
 }

@@ -1,32 +1,32 @@
-import { useState } from "react"
-import { CreditCardIcon, LockIcon } from "./icons"
+import { useState } from 'react';
+import { CreditCardIcon, LockIcon } from './Icons';
 
 export function CheckoutForm({ onSubmit }) {
   const [formData, setFormData] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    address: "",
-    apartment: "",
-    city: "",
-    country: "United States",
-    postalCode: "",
-    phone: "",
-    paymentMethod: "card",
-    cardNumber: "",
-    cardExpiry: "",
-    cardCvc: "",
-  })
+    email: '',
+    firstName: '',
+    lastName: '',
+    address: '',
+    apartment: '',
+    city: '',
+    country: 'United States',
+    postalCode: '',
+    phone: '',
+    paymentMethod: 'card',
+    cardNumber: '',
+    cardExpiry: '',
+    cardCvc: '',
+  });
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    onSubmit(formData)
-  }
+    e.preventDefault();
+    onSubmit(formData);
+  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -181,7 +181,7 @@ export function CheckoutForm({ onSubmit }) {
               type="radio"
               name="paymentMethod"
               value="card"
-              checked={formData.paymentMethod === "card"}
+              checked={formData.paymentMethod === 'card'}
               onChange={handleChange}
               className="w-4 h-4 text-[#C41E3A] focus:ring-[#C41E3A]"
             />
@@ -196,7 +196,7 @@ export function CheckoutForm({ onSubmit }) {
               type="radio"
               name="paymentMethod"
               value="paypal"
-              checked={formData.paymentMethod === "paypal"}
+              checked={formData.paymentMethod === 'paypal'}
               onChange={handleChange}
               className="w-4 h-4 text-[#C41E3A] focus:ring-[#C41E3A]"
             />
@@ -205,7 +205,7 @@ export function CheckoutForm({ onSubmit }) {
           </label>
         </div>
 
-        {formData.paymentMethod === "card" && (
+        {formData.paymentMethod === 'card' && (
           <div className="bg-gray-50 p-4 rounded-lg space-y-4">
             <div>
               <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-1">
@@ -226,7 +226,10 @@ export function CheckoutForm({ onSubmit }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label htmlFor="cardExpiry" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="cardExpiry"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Expiry Date
                 </label>
                 <input
@@ -268,16 +271,16 @@ export function CheckoutForm({ onSubmit }) {
       </button>
 
       <p className="text-center text-xs text-gray-500">
-        By completing your order, you agree to our{" "}
+        By completing your order, you agree to our{' '}
         <a href="#" className="text-[#C41E3A] hover:underline">
           Terms of Service
-        </a>{" "}
-        and{" "}
+        </a>{' '}
+        and{' '}
         <a href="#" className="text-[#C41E3A] hover:underline">
           Privacy Policy
         </a>
         .
       </p>
     </form>
-  )
+  );
 }

@@ -268,7 +268,7 @@ components:
           type: string
           format: uri
           description: URL of the product video
-          example: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          example: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
         video_position:
           type: integer
           description: Display position of video (1=after thumbnails)
@@ -403,7 +403,7 @@ components:
           schema: { type: boolean, default: false }
           description: Include video metadata in response
       responses:
-        '200': 
+        '200':
           description: List of products
           content:
             application/json:
@@ -435,7 +435,7 @@ components:
           schema: { type: boolean, default: true }
           description: Include video metadata in response
       responses:
-        '200': 
+        '200':
           description: Product details
           content:
             application/json:

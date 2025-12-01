@@ -1,10 +1,10 @@
-import { Link } from "react-router-dom"
-import { ChevronDownIcon, UserIcon, ShoppingCartIcon, SearchIcon, PhoneIcon } from "./icons"
-import { useCart } from "@/lib/cart"
+import { Link } from 'react-router-dom';
+import { ChevronDownIcon, UserIcon, ShoppingCartIcon, SearchIcon, PhoneIcon } from './Icons';
+import { useCart } from '@/lib/cart';
 
 export function Header() {
-  const { items } = useCart()
-  const cartCount = items.reduce((total, item) => total + item.qty, 0)
+  const { items } = useCart();
+  const cartCount = items.reduce((total, item) => total + item.qty, 0);
 
   return (
     <header className="bg-white border-b border-gray-100 sticky top-0 z-50">
@@ -44,11 +44,17 @@ export function Header() {
             </div>
 
             <div className="flex items-center gap-1">
-              <Link to="/account" className="flex items-center gap-1.5 p-2 hover:bg-gray-100 rounded-full transition-colors">
+              <Link
+                to="/account"
+                className="flex items-center gap-1.5 p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
                 <UserIcon className="w-5 h-5" />
                 <span className="hidden sm:inline text-sm font-medium">SIGN IN</span>
               </Link>
-              <Link to="/cart" className="p-2 hover:bg-gray-100 rounded-full transition-colors relative">
+              <Link
+                to="/cart"
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
+              >
                 <ShoppingCartIcon className="w-5 h-5" />
                 {cartCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-[#C41E3A] text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
@@ -64,5 +70,5 @@ export function Header() {
         </div>
       </div>
     </header>
-  )
+  );
 }

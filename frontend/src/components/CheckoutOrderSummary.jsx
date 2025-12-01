@@ -9,7 +9,11 @@ export function CheckoutOrderSummary({ items, subtotal, shipping, tax, total }) 
           <div key={item.id} className="flex gap-3">
             <div className="relative">
               <div className="w-16 h-16 bg-white rounded-lg overflow-hidden border border-gray-200">
-                <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-full object-cover" />
+                <img
+                  src={item.image || '/placeholder.svg'}
+                  alt={item.name}
+                  className="w-full h-full object-cover"
+                />
               </div>
               <span className="absolute -top-2 -right-2 w-5 h-5 bg-gray-500 text-white text-xs rounded-full flex items-center justify-center">
                 {item.quantity}
@@ -48,7 +52,7 @@ export function CheckoutOrderSummary({ items, subtotal, shipping, tax, total }) 
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Shipping</span>
-          <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+          <span className="font-medium">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Tax</span>
@@ -75,5 +79,5 @@ export function CheckoutOrderSummary({ items, subtotal, shipping, tax, total }) 
         <span>Secure SSL Encryption</span>
       </div>
     </div>
-  )
+  );
 }

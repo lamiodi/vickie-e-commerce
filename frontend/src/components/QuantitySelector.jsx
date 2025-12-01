@@ -1,17 +1,17 @@
-import { MinusIcon, PlusIcon } from "./icons"
+import { MinusIcon, PlusIcon } from './Icons';
 
 export function QuantitySelector({ quantity, onQuantityChange, min = 1, max = 99 }) {
   const decrease = () => {
     if (quantity > min) {
-      onQuantityChange(quantity - 1)
+      onQuantityChange(quantity - 1);
     }
-  }
+  };
 
   const increase = () => {
     if (quantity < max) {
-      onQuantityChange(quantity + 1)
+      onQuantityChange(quantity + 1);
     }
-  }
+  };
 
   return (
     <div className="flex items-center border border-gray-300 rounded-lg">
@@ -31,5 +31,5 @@ export function QuantitySelector({ quantity, onQuantityChange, min = 1, max = 99
         <PlusIcon className="w-4 h-4" />
       </button>
     </div>
-  )
+  );
 }

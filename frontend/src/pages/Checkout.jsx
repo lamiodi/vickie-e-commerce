@@ -1,82 +1,82 @@
-import { useState } from "react"
-import { Link } from "react-router-dom"
-import { TopBar } from "@/components/top-bar"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { BrandLogos } from "@/components/brand-logos"
-import { CheckoutSteps } from "@/components/checkout-steps"
-import { CheckoutForm } from "@/components/checkout-form"
-import { CheckoutOrderSummary } from "@/components/checkout-order-summary"
-import { HomeIcon, ChevronRightIcon } from "@/components/icons"
-import { useCart } from "@/lib/cart"
-import { api } from "@/lib/api"
-import { toast } from "sonner"
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { TopBar } from '@/components/TopBar';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { BrandLogos } from '@/components/BrandLogos';
+import { CheckoutSteps } from '@/components/CheckoutSteps';
+import { CheckoutForm } from '@/components/CheckoutForm';
+import { CheckoutOrderSummary } from '@/components/CheckoutOrderSummary';
+import { HomeIcon, ChevronRightIcon } from '@/components/Icons';
+import { useCart } from '@/lib/cart';
+import { api } from '@/lib/api';
+import { toast } from 'sonner';
 
 export default function Checkout() {
-  const [currentStep, setCurrentStep] = useState(2)
-  const { items: cartItems, clearCart } = useCart()
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [currentStep, setCurrentStep] = useState(2);
+  const { items: cartItems, clearCart } = useCart();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price
-    return sum + price * item.qty
-  }, 0)
-  
-  const shipping = subtotal > 100 ? 0 : 9.99
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+    const price =
+      typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price;
+    return sum + price * item.qty;
+  }, 0);
+
+  const shipping = subtotal > 100 ? 0 : 9.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
 
   const handleCheckoutSubmit = async (formData) => {
     if (cartItems.length === 0) {
-        toast.error("Your cart is empty.")
-        return
+      toast.error('Your cart is empty.');
+      return;
     }
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
-        const orderData = {
-            items: cartItems.map(item => ({
-                productId: item.id,
-                quantity: item.qty,
-                size: item.size,
-                color: item.color
-            })),
-            customer: {
-                firstName: formData.firstName,
-                lastName: formData.lastName,
-                email: formData.email,
-                phone: formData.phone
-            },
-            shippingAddress: {
-                address: formData.address,
-                city: formData.city,
-                country: formData.country,
-                postalCode: formData.postalCode,
-                apartment: formData.apartment
-            },
-            paymentMethod: formData.paymentMethod,
-            totals: {
-                subtotal,
-                shipping,
-                tax,
-                total
-            }
-        }
+      const orderData = {
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.qty,
+          size: item.size,
+          color: item.color,
+        })),
+        customer: {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone,
+        },
+        shippingAddress: {
+          address: formData.address,
+          city: formData.city,
+          country: formData.country,
+          postalCode: formData.postalCode,
+          apartment: formData.apartment,
+        },
+        paymentMethod: formData.paymentMethod,
+        totals: {
+          subtotal,
+          shipping,
+          tax,
+          total,
+        },
+      };
 
-        // Call API to create order
-        await api.post('/orders', orderData)
-        
-        toast.success("Order placed successfully!")
-        clearCart()
-        setCurrentStep(3)
+      // Call API to create order
+      await api.post('/orders', orderData);
 
+      toast.success('Order placed successfully!');
+      clearCart();
+      setCurrentStep(3);
     } catch (error) {
-        console.error("Checkout error:", error)
-        toast.error("Failed to place order. Please try again.")
+      console.error('Checkout error:', error);
+      toast.error('Failed to place order. Please try again.');
     } finally {
-        setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   if (currentStep === 3) {
     return (
@@ -86,7 +86,12 @@ export default function Checkout() {
         <div className="max-w-3xl mx-auto px-4 py-16 text-center">
           <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="m4.5 12.75 6 6 9-13.5" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="m4.5 12.75 6 6 9-13.5"
+              />
             </svg>
           </div>
           <h1 className="text-3xl font-bold mb-4">Order Confirmed!</h1>
@@ -102,7 +107,7 @@ export default function Checkout() {
         </div>
         <Footer />
       </div>
-    )
+    );
   }
 
   return (
@@ -114,7 +119,10 @@ export default function Checkout() {
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
-            <Link to="/" className="flex items-center gap-1 text-gray-500 hover:text-[#C41E3A] transition-colors">
+            <Link
+              to="/"
+              className="flex items-center gap-1 text-gray-500 hover:text-[#C41E3A] transition-colors"
+            >
               <HomeIcon className="w-4 h-4" />
               Home
             </Link>
@@ -134,11 +142,11 @@ export default function Checkout() {
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             {isSubmitting ? (
-                 <div className="p-8 text-center bg-gray-50 rounded-lg">
-                    <p className="text-lg font-medium">Processing your order...</p>
-                 </div>
+              <div className="p-8 text-center bg-gray-50 rounded-lg">
+                <p className="text-lg font-medium">Processing your order...</p>
+              </div>
             ) : (
-                <CheckoutForm onSubmit={handleCheckoutSubmit} />
+              <CheckoutForm onSubmit={handleCheckoutSubmit} />
             )}
           </div>
 
@@ -158,5 +166,5 @@ export default function Checkout() {
       <BrandLogos />
       <Footer />
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 export function OrderSummary({ subtotal, shipping, tax, total, showCheckoutButton = true }) {
   return (
@@ -12,7 +12,7 @@ export function OrderSummary({ subtotal, shipping, tax, total, showCheckoutButto
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Shipping</span>
-          <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+          <span className="font-medium">{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span className="text-gray-600">Tax</span>
@@ -60,5 +60,5 @@ export function OrderSummary({ subtotal, shipping, tax, total, showCheckoutButto
         <span>Secure SSL Encryption</span>
       </div>
     </div>
-  )
+  );
 }

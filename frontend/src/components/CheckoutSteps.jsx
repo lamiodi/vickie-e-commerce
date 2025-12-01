@@ -1,10 +1,10 @@
-import { CheckIcon } from "./icons"
+import { CheckIcon } from './Icons';
 
 const steps = [
-  { id: 1, name: "Shopping Cart" },
-  { id: 2, name: "Checkout" },
-  { id: 3, name: "Order Complete" },
-]
+  { id: 1, name: 'Shopping Cart' },
+  { id: 2, name: 'Checkout' },
+  { id: 3, name: 'Order Complete' },
+];
 
 export function CheckoutSteps({ currentStep }) {
   return (
@@ -15,17 +15,17 @@ export function CheckoutSteps({ currentStep }) {
             <div
               className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
                 step.id < currentStep
-                  ? "bg-[#C41E3A] text-white"
+                  ? 'bg-[#C41E3A] text-white'
                   : step.id === currentStep
-                    ? "bg-[#C41E3A] text-white"
-                    : "bg-gray-200 text-gray-500"
+                    ? 'bg-[#C41E3A] text-white'
+                    : 'bg-gray-200 text-gray-500'
               }`}
             >
               {step.id < currentStep ? <CheckIcon className="w-4 h-4" /> : step.id}
             </div>
             <span
               className={`hidden sm:inline text-sm font-medium ${
-                step.id <= currentStep ? "text-gray-900" : "text-gray-400"
+                step.id <= currentStep ? 'text-gray-900' : 'text-gray-400'
               }`}
             >
               {step.name}
@@ -35,5 +35,5 @@ export function CheckoutSteps({ currentStep }) {
         </div>
       ))}
     </div>
-  )
+  );
 }

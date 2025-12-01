@@ -1,38 +1,35 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
+import { Badge } from '@/components/ui/Badge';
+import { Separator } from '@/components/ui/Separator';
 import { getMe, meOrders } from '@/lib/auth';
 import LoginForm from '@/components/LoginForm';
-import { 
-  User, 
-  Package, 
-  Heart, 
-  Settings, 
-  MapPin, 
-  CreditCard, 
-  Bell, 
-  Eye, 
+import {
+  User,
+  Package,
+  Heart,
+  Settings,
+  MapPin,
+  CreditCard,
+  Eye,
   EyeOff,
   Edit2,
+  DollarSign,
   Save,
   X,
   ChevronRight,
-  Calendar,
-  DollarSign,
   Truck,
   CheckCircle,
   Clock,
   AlertCircle,
   Star,
   ShoppingBag,
-  LogOut
+  LogOut,
 } from 'lucide-react';
 
 const Account = () => {
@@ -43,7 +40,6 @@ const Account = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
   const [notifications, setNotifications] = useState(true);
   const [newsletter, setNewsletter] = useState(true);
   const [smsUpdates, setSmsUpdates] = useState(false);
@@ -57,71 +53,10 @@ const Account = () => {
     gender: '',
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const userData = await getMe();
-        setUser(userData);
-        setUserData(prev => ({
-          ...prev,
-          firstName: userData.name?.split(' ')[0] || '',
-          lastName: userData.name?.split(' ')[1] || '',
-          email: userData.email,
-        }));
-        
-        // Try to fetch orders, but don't block if it fails
-        try {
-          const myOrders = await meOrders();
-          // Transform backend orders to frontend format if needed
-          // For now we keep using mock orders until backend returns same structure
-        } catch (err) {
-          console.error("Failed to fetch orders", err);
-        }
-      } catch (err) {
-        // Not logged in
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchUser();
-  }, []);
-
-  const handleLoginSuccess = () => {
-    setIsLoading(true);
-    getMe().then(userData => {
-      setUser(userData);
-      setUserData(prev => ({
-        ...prev,
-        firstName: userData.name?.split(' ')[0] || '',
-        lastName: userData.name?.split(' ')[1] || '',
-        email: userData.email,
-      }));
-      setIsLoading(false);
-    });
-  };
-
-  const handleLogout = () => {
-    // Clear tokens (cookies are httpOnly, so we can't clear them from JS easily without an endpoint, 
-    // but we can clear local state. Ideally call a logout endpoint)
-    // document.cookie = 'refresh_token=; Max-Age=0; path=/;'; // Can't do this for HttpOnly
-    setUser(null);
-    window.location.reload(); // Simple way to reset state and re-check auth
-  };
-
-  if (isLoading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-  }
-
-  if (!user) {
-    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
-  }
-
-  const [addresses, setAddresses] = useState([
+  const [addresses] = useState([
     {
       id: 1,
       type: 'billing',
@@ -134,7 +69,7 @@ const Account = () => {
       zipCode: '10001',
       country: 'United States',
       phone: '(555) 123-4567',
-      isDefault: true
+      isDefault: true,
     },
     {
       id: 2,
@@ -148,11 +83,11 @@ const Account = () => {
       zipCode: '90001',
       country: 'United States',
       phone: '(555) 987-6543',
-      isDefault: false
-    }
+      isDefault: false,
+    },
   ]);
 
-  const [paymentMethods, setPaymentMethods] = useState([
+  const [paymentMethods] = useState([
     {
       id: 1,
       type: 'card',
@@ -161,7 +96,7 @@ const Account = () => {
       expiryMonth: '12',
       expiryYear: '2025',
       cardholderName: 'John Doe',
-      isDefault: true
+      isDefault: true,
     },
     {
       id: 2,
@@ -171,17 +106,17 @@ const Account = () => {
       expiryMonth: '06',
       expiryYear: '2024',
       cardholderName: 'John Doe',
-      isDefault: false
+      isDefault: false,
     },
     {
       id: 3,
       type: 'paypal',
       email: 'john.doe@example.com',
-      isDefault: false
-    }
+      isDefault: false,
+    },
   ]);
 
-  const [orders, setOrders] = useState([
+  const [orders] = useState([
     {
       id: 'ORD-ABC123456',
       date: '2024-01-15',
@@ -193,19 +128,21 @@ const Account = () => {
           name: 'Premium Running Shoes',
           price: 129.99,
           quantity: 1,
-          image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Premium%20running%20shoes%20with%20modern%20design%20and%20red%20accents&image_size=square',
+          image:
+            'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Premium%20running%20shoes%20with%20modern%20design%20and%20red%20accents&image_size=square',
           size: '9',
-          color: 'Red/Black'
+          color: 'Red/Black',
         },
         {
           id: 2,
           name: 'Athletic T-Shirt',
           price: 39.99,
           quantity: 1,
-          image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Athletic%20t-shirt%20in%20red%20color%20with%20sporty%20design&image_size=square',
+          image:
+            'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Athletic%20t-shirt%20in%20red%20color%20with%20sporty%20design&image_size=square',
           size: 'M',
-          color: 'Red'
-        }
+          color: 'Red',
+        },
       ],
       shippingAddress: {
         firstName: 'John',
@@ -213,10 +150,10 @@ const Account = () => {
         address: '123 Main Street',
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       },
       trackingNumber: 'TRK123456789',
-      estimatedDelivery: '2024-01-20'
+      estimatedDelivery: '2024-01-20',
     },
     {
       id: 'ORD-DEF789012',
@@ -229,19 +166,21 @@ const Account = () => {
           name: 'Sports Water Bottle',
           price: 24.99,
           quantity: 1,
-          image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Sports%20water%20bottle%20with%20red%20accents%20and%20modern%20design&image_size=square',
+          image:
+            'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Sports%20water%20bottle%20with%20red%20accents%20and%20modern%20design&image_size=square',
           size: '32oz',
-          color: 'Red'
+          color: 'Red',
         },
         {
           id: 4,
           name: 'Running Shorts',
           price: 59.99,
           quantity: 1,
-          image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Running%20shorts%20in%20red%20color%20with%20athletic%20design&image_size=square',
+          image:
+            'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Running%20shorts%20in%20red%20color%20with%20athletic%20design&image_size=square',
           size: 'L',
-          color: 'Red'
-        }
+          color: 'Red',
+        },
       ],
       shippingAddress: {
         firstName: 'John',
@@ -249,10 +188,10 @@ const Account = () => {
         address: '456 Oak Avenue',
         city: 'Los Angeles',
         state: 'CA',
-        zipCode: '90001'
+        zipCode: '90001',
       },
       trackingNumber: 'TRK987654321',
-      estimatedDelivery: '2024-01-18'
+      estimatedDelivery: '2024-01-18',
     },
     {
       id: 'ORD-GHI345678',
@@ -265,10 +204,11 @@ const Account = () => {
           name: 'Fitness Tracker',
           price: 159.99,
           quantity: 1,
-          image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Fitness%20tracker%20watch%20with%20red%20band%20and%20modern%20design&image_size=square',
+          image:
+            'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Fitness%20tracker%20watch%20with%20red%20band%20and%20modern%20design&image_size=square',
           size: 'One Size',
-          color: 'Black/Red'
-        }
+          color: 'Black/Red',
+        },
       ],
       shippingAddress: {
         firstName: 'John',
@@ -276,77 +216,133 @@ const Account = () => {
         address: '123 Main Street',
         city: 'New York',
         state: 'NY',
-        zipCode: '10001'
+        zipCode: '10001',
       },
       trackingNumber: null,
-      estimatedDelivery: '2024-01-22'
-    }
+      estimatedDelivery: '2024-01-22',
+    },
   ]);
 
-  const [wishlist, setWishlist] = useState([
+  const [wishlist] = useState([
     {
       id: 6,
       name: 'Premium Yoga Mat',
       price: 79.99,
       originalPrice: 99.99,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Premium%20yoga%20mat%20in%20red%20color%20with%20premium%20texture&image_size=square',
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Premium%20yoga%20mat%20in%20red%20color%20with%20premium%20texture&image_size=square',
       rating: 4.8,
       reviews: 124,
       inStock: true,
-      addedDate: '2024-01-12'
+      addedDate: '2024-01-12',
     },
     {
       id: 7,
       name: 'Wireless Earbuds',
       price: 149.99,
       originalPrice: null,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Wireless%20earbuds%20in%20red%20color%20with%20sport%20design&image_size=square',
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Wireless%20earbuds%20in%20red%20color%20with%20sport%20design&image_size=square',
       rating: 4.6,
       reviews: 89,
       inStock: false,
-      addedDate: '2024-01-08'
+      addedDate: '2024-01-08',
     },
     {
       id: 8,
       name: 'Gym Bag',
       price: 49.99,
       originalPrice: 69.99,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Gym%20bag%20in%20red%20color%20with%20sporty%20design&image_size=square',
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Gym%20bag%20in%20red%20color%20with%20sporty%20design&image_size=square',
       rating: 4.4,
       reviews: 67,
       inStock: true,
-      addedDate: '2024-01-03'
-    }
+      addedDate: '2024-01-03',
+    },
   ]);
 
-  const [recentlyViewed, setRecentlyViewed] = useState([
+  const [recentlyViewed] = useState([
     {
       id: 9,
       name: 'Compression Socks',
       price: 29.99,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Compression%20socks%20in%20red%20color%20athletic%20design&image_size=square',
-      viewedDate: '2024-01-14'
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Compression%20socks%20in%20red%20color%20athletic%20design&image_size=square',
+      viewedDate: '2024-01-14',
     },
     {
       id: 10,
       name: 'Sports Watch',
       price: 199.99,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Sports%20watch%20with%20red%20accents%20and%20digital%20display&image_size=square',
-      viewedDate: '2024-01-13'
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Sports%20watch%20with%20red%20accents%20and%20digital%20display&image_size=square',
+      viewedDate: '2024-01-13',
     },
     {
       id: 11,
       name: 'Training Shoes',
       price: 89.99,
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Training%20shoes%20in%20red%20color%20with%20modern%20design&image_size=square',
-      viewedDate: '2024-01-12'
-    }
+      image:
+        'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Training%20shoes%20in%20red%20color%20with%20modern%20design&image_size=square',
+      viewedDate: '2024-01-12',
+    },
   ]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userData = await getMe();
+        setUser(userData);
+        setUserData((prev) => ({
+          ...prev,
+          firstName: userData.name?.split(' ')[0] || '',
+          lastName: userData.name?.split(' ')[1] || '',
+          email: userData.email,
+        }));
+
+        // Try to fetch orders, but don't block if it fails
+        try {
+          await meOrders();
+          // Transform backend orders to frontend format if needed
+          // For now we keep using mock orders until backend returns same structure
+        } catch (err) {
+          console.error('Failed to fetch orders', err);
+        }
+      } catch {
+        // Not logged in
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  const handleLoginSuccess = () => {
+    setIsLoading(true);
+    getMe().then((userData) => {
+      setUser(userData);
+      setUserData((prev) => ({
+        ...prev,
+        firstName: userData.name?.split(' ')[0] || '',
+        lastName: userData.name?.split(' ')[1] || '',
+        email: userData.email,
+      }));
+      setIsLoading(false);
+    });
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    window.location.reload();
+  };
+
   const handleInputChange = useCallback((field, value) => {
-    setUserData(prev => ({
+    setUserData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   }, []);
 
@@ -366,27 +362,37 @@ const Account = () => {
       gender: 'male',
       currentPassword: '',
       newPassword: '',
-      confirmPassword: ''
+      confirmPassword: '',
     });
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'delivered': return 'bg-green-100 text-green-800';
-      case 'shipped': return 'bg-blue-100 text-blue-800';
-      case 'processing': return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'delivered':
+        return 'bg-green-100 text-green-800';
+      case 'shipped':
+        return 'bg-blue-100 text-blue-800';
+      case 'processing':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'cancelled':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'delivered': return <CheckCircle className="w-4 h-4" />;
-      case 'shipped': return <Truck className="w-4 h-4" />;
-      case 'processing': return <Clock className="w-4 h-4" />;
-      case 'cancelled': return <AlertCircle className="w-4 h-4" />;
-      default: return <Clock className="w-4 h-4" />;
+      case 'delivered':
+        return <CheckCircle className="w-4 h-4" />;
+      case 'shipped':
+        return <Truck className="w-4 h-4" />;
+      case 'processing':
+        return <Clock className="w-4 h-4" />;
+      case 'cancelled':
+        return <AlertCircle className="w-4 h-4" />;
+      default:
+        return <Clock className="w-4 h-4" />;
     }
   };
 
@@ -394,16 +400,24 @@ const Account = () => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     });
   };
 
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'USD',
     }).format(amount);
   };
+
+  if (isLoading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!user) {
+    return <LoginForm onLoginSuccess={handleLoginSuccess} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -411,7 +425,7 @@ const Account = () => {
         <title>My Account - Vickie Ecom</title>
         <meta name="description" content="Manage your account, orders, and preferences" />
       </Helmet>
-      
+
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-8">
           <div className="flex items-center justify-between">
@@ -432,17 +446,23 @@ const Account = () => {
               <CardContent className="p-6">
                 <div className="text-center">
                   <Avatar className="w-20 h-20 mx-auto mb-4">
-                    <AvatarImage src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Professional%20male%20avatar%20with%20red%20background&image_size=square" alt={userData.firstName} />
+                    <AvatarImage
+                      src="https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Professional%20male%20avatar%20with%20red%20background&image_size=square"
+                      alt={userData.firstName}
+                    />
                     <AvatarFallback className="bg-red-600 text-white text-xl">
-                      {userData.firstName.charAt(0)}{userData.lastName.charAt(0)}
+                      {userData.firstName.charAt(0)}
+                      {userData.lastName.charAt(0)}
                     </AvatarFallback>
                   </Avatar>
-                  <h3 className="font-semibold text-lg">{userData.firstName} {userData.lastName}</h3>
+                  <h3 className="font-semibold text-lg">
+                    {userData.firstName} {userData.lastName}
+                  </h3>
                   <p className="text-gray-600 text-sm">{userData.email}</p>
                 </div>
-                
+
                 <Separator className="my-6" />
-                
+
                 <nav className="space-y-2">
                   <button
                     onClick={() => setActiveTab('overview')}
@@ -594,7 +614,11 @@ const Account = () => {
                             <Save className="w-4 h-4 mr-2" />
                             Save Changes
                           </Button>
-                          <Button onClick={handleCancelEdit} variant="outline" className="flex items-center">
+                          <Button
+                            onClick={handleCancelEdit}
+                            variant="outline"
+                            className="flex items-center"
+                          >
                             <X className="w-4 h-4 mr-2" />
                             Cancel
                           </Button>
@@ -605,7 +629,9 @@ const Account = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           <div>
                             <p className="text-sm text-gray-600">Full Name</p>
-                            <p className="font-medium">{userData.firstName} {userData.lastName}</p>
+                            <p className="font-medium">
+                              {userData.firstName} {userData.lastName}
+                            </p>
                           </div>
                           <div>
                             <p className="text-sm text-gray-600">Email Address</p>
@@ -693,7 +719,8 @@ const Account = () => {
                               <div>
                                 <p className="font-medium text-sm">{order.items[0].name}</p>
                                 <p className="text-xs text-gray-600">
-                                  {order.items.length > 1 && `+${order.items.length - 1} more items`}
+                                  {order.items.length > 1 &&
+                                    `+${order.items.length - 1} more items`}
                                 </p>
                               </div>
                             </div>
@@ -728,7 +755,7 @@ const Account = () => {
                               <span className="ml-1 capitalize">{order.status}</span>
                             </Badge>
                           </div>
-                          
+
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>
                               <p className="text-sm text-gray-600 mb-2">Items</p>
@@ -746,36 +773,45 @@ const Account = () => {
                                         {item.size} • {item.color} • Qty: {item.quantity}
                                       </p>
                                     </div>
-                                    <p className="font-medium text-sm">{formatCurrency(item.price * item.quantity)}</p>
+                                    <p className="font-medium text-sm">
+                                      {formatCurrency(item.price * item.quantity)}
+                                    </p>
                                   </div>
                                 ))}
                               </div>
                             </div>
-                            
+
                             <div>
                               <p className="text-sm text-gray-600 mb-2">Shipping Address</p>
                               <div className="text-sm">
-                                <p>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
+                                <p>
+                                  {order.shippingAddress.firstName} {order.shippingAddress.lastName}
+                                </p>
                                 <p>{order.shippingAddress.address}</p>
-                                <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</p>
+                                <p>
+                                  {order.shippingAddress.city}, {order.shippingAddress.state}{' '}
+                                  {order.shippingAddress.zipCode}
+                                </p>
                               </div>
-                              
+
                               {order.trackingNumber && (
                                 <div className="mt-3">
                                   <p className="text-sm text-gray-600">Tracking Number</p>
                                   <p className="font-medium text-sm">{order.trackingNumber}</p>
                                 </div>
                               )}
-                              
+
                               {order.estimatedDelivery && (
                                 <div className="mt-3">
                                   <p className="text-sm text-gray-600">Estimated Delivery</p>
-                                  <p className="font-medium text-sm">{formatDate(order.estimatedDelivery)}</p>
+                                  <p className="font-medium text-sm">
+                                    {formatDate(order.estimatedDelivery)}
+                                  </p>
                                 </div>
                               )}
                             </div>
                           </div>
-                          
+
                           <div className="flex items-center justify-between pt-4 border-t">
                             <p className="font-bold text-lg">{formatCurrency(order.total)}</p>
                             <div className="flex space-x-2">
@@ -843,7 +879,9 @@ const Account = () => {
                                   <Star
                                     key={i}
                                     className={`w-4 h-4 ${
-                                      i < Math.floor(item.rating) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                                      i < Math.floor(item.rating)
+                                        ? 'text-yellow-400 fill-current'
+                                        : 'text-gray-300'
                                     }`}
                                   />
                                 ))}
@@ -861,8 +899,8 @@ const Account = () => {
                               </div>
                             </div>
                             <div className="space-y-2">
-                              <Button 
-                                className="w-full bg-red-600 hover:bg-red-700" 
+                              <Button
+                                className="w-full bg-red-600 hover:bg-red-700"
                                 disabled={!item.inStock}
                               >
                                 <ShoppingBag className="w-4 h-4 mr-2" />
@@ -883,12 +921,15 @@ const Account = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle>Recently Viewed</CardTitle>
-                      <CardDescription>Items you've recently looked at</CardDescription>
+                      <CardDescription>Items you&apos;ve recently looked at</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {recentlyViewed.map((item) => (
-                          <div key={item.id} className="flex items-center space-x-3 p-3 border rounded-lg">
+                          <div
+                            key={item.id}
+                            className="flex items-center space-x-3 p-3 border rounded-lg"
+                          >
                             <img
                               src={item.image}
                               alt={item.name}
@@ -897,7 +938,9 @@ const Account = () => {
                             <div className="flex-1">
                               <p className="font-medium text-sm">{item.name}</p>
                               <p className="font-bold text-red-600">{formatCurrency(item.price)}</p>
-                              <p className="text-xs text-gray-600">Viewed {formatDate(item.viewedDate)}</p>
+                              <p className="text-xs text-gray-600">
+                                Viewed {formatDate(item.viewedDate)}
+                              </p>
                             </div>
                             <ChevronRight className="w-4 h-4 text-gray-400" />
                           </div>
@@ -940,10 +983,14 @@ const Account = () => {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-2">
-                          <p className="font-medium">{address.firstName} {address.lastName}</p>
+                          <p className="font-medium">
+                            {address.firstName} {address.lastName}
+                          </p>
                           <p>{address.address}</p>
                           {address.apartment && <p>{address.apartment}</p>}
-                          <p>{address.city}, {address.state} {address.zipCode}</p>
+                          <p>
+                            {address.city}, {address.state} {address.zipCode}
+                          </p>
                           <p>{address.country}</p>
                           <p>{address.phone}</p>
                         </div>
@@ -996,7 +1043,9 @@ const Account = () => {
                             <div>
                               {method.type === 'card' ? (
                                 <div>
-                                  <p className="font-medium">{method.cardType} ending in {method.lastFour}</p>
+                                  <p className="font-medium">
+                                    {method.cardType} ending in {method.lastFour}
+                                  </p>
                                   <p className="text-sm text-gray-600">
                                     Expires {method.expiryMonth}/{method.expiryYear}
                                   </p>
@@ -1014,9 +1063,13 @@ const Account = () => {
                             {method.isDefault && (
                               <Badge className="bg-green-100 text-green-800">Default</Badge>
                             )}
-                            <Button variant="outline" size="sm">Edit</Button>
+                            <Button variant="outline" size="sm">
+                              Edit
+                            </Button>
                             {!method.isDefault && (
-                              <Button variant="outline" size="sm">Set as Default</Button>
+                              <Button variant="outline" size="sm">
+                                Set as Default
+                              </Button>
                             )}
                           </div>
                         </div>
@@ -1050,7 +1103,11 @@ const Account = () => {
                             onClick={() => setShowPassword(!showPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2"
                           >
-                            {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showPassword ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1068,7 +1125,11 @@ const Account = () => {
                             onClick={() => setShowNewPassword(!showNewPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2"
                           >
-                            {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showNewPassword ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1086,7 +1147,11 @@ const Account = () => {
                             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             className="absolute right-3 top-1/2 transform -translate-y-1/2"
                           >
-                            {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            {showConfirmPassword ? (
+                              <EyeOff className="w-4 h-4" />
+                            ) : (
+                              <Eye className="w-4 h-4" />
+                            )}
                           </button>
                         </div>
                       </div>
@@ -1108,7 +1173,9 @@ const Account = () => {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">Email Notifications</p>
-                          <p className="text-sm text-gray-600">Receive updates about your orders and account</p>
+                          <p className="text-sm text-gray-600">
+                            Receive updates about your orders and account
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -1120,13 +1187,15 @@ const Account = () => {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                         </label>
                       </div>
-                      
+
                       <Separator />
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">Newsletter</p>
-                          <p className="text-sm text-gray-600">Receive promotional offers and new product updates</p>
+                          <p className="text-sm text-gray-600">
+                            Receive promotional offers and new product updates
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -1138,13 +1207,15 @@ const Account = () => {
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-red-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
                         </label>
                       </div>
-                      
+
                       <Separator />
-                      
+
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="font-medium">SMS Updates</p>
-                          <p className="text-sm text-gray-600">Receive text messages about order status</p>
+                          <p className="text-sm text-gray-600">
+                            Receive text messages about order status
+                          </p>
                         </div>
                         <label className="relative inline-flex items-center cursor-pointer">
                           <input
@@ -1167,11 +1238,17 @@ const Account = () => {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <Button variant="outline" className="w-full flex items-center justify-between">
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-between"
+                      >
                         <span>Download Account Data</span>
                         <ChevronRight className="w-4 h-4" />
                       </Button>
-                      <Button variant="outline" className="w-full flex items-center justify-between">
+                      <Button
+                        variant="outline"
+                        className="w-full flex items-center justify-between"
+                      >
                         <span>Request Account Deletion</span>
                         <ChevronRight className="w-4 h-4" />
                       </Button>

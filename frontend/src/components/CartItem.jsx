@@ -1,22 +1,33 @@
-import { Link } from "react-router-dom"
-import { QuantitySelector } from "./quantity-selector"
-import { TrashIcon } from "./icons"
+import { Link } from 'react-router-dom';
+import { QuantitySelector } from './QuantitySelector';
+import { TrashIcon } from './Icons';
 
 export function CartItem({ item, onQuantityChange, onRemove }) {
   return (
     <div className="flex gap-4 py-6 border-b border-gray-200">
       {/* Product Image */}
-      <Link to={`/products/${item.id}`} className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-        <img src={item.image || "/placeholder.svg"} alt={item.name} className="w-full h-full object-cover" />
+      <Link
+        to={`/products/${item.id}`}
+        className="w-24 h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0"
+      >
+        <img
+          src={item.image || '/placeholder.svg'}
+          alt={item.name}
+          className="w-full h-full object-cover"
+        />
       </Link>
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
         <div className="flex justify-between">
           <div>
-            <span className="text-[#C41E3A] text-xs font-semibold uppercase tracking-wide">{item.category}</span>
+            <span className="text-[#C41E3A] text-xs font-semibold uppercase tracking-wide">
+              {item.category}
+            </span>
             <Link to={`/products/${item.id}`}>
-              <h3 className="font-medium text-sm mt-1 hover:text-[#C41E3A] transition-colors">{item.name}</h3>
+              <h3 className="font-medium text-sm mt-1 hover:text-[#C41E3A] transition-colors">
+                {item.name}
+              </h3>
             </Link>
             <div className="flex gap-4 mt-1 text-xs text-gray-500">
               <span>Size: {item.size}</span>
@@ -43,5 +54,5 @@ export function CartItem({ item, onQuantityChange, onRemove }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

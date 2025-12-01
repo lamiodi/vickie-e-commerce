@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { refresh } from "@/lib/auth";
-import { api } from "@/lib/api";
+import { useEffect, useState } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { refresh } from '@/lib/auth';
+import { api } from '@/lib/api';
 
 export const ProtectedRoute = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -10,7 +10,7 @@ export const ProtectedRoute = () => {
   useEffect(() => {
     const checkAuth = async () => {
       // Check if we already have an access token in headers
-      if (api.defaults.headers.common["Authorization"]) {
+      if (api.defaults.headers.common['Authorization']) {
         setIsAuthenticated(true);
         setIsLoading(false);
         return;
@@ -20,7 +20,7 @@ export const ProtectedRoute = () => {
       try {
         await refresh();
         setIsAuthenticated(true);
-      } catch (error) {
+      } catch {
         setIsAuthenticated(false);
       } finally {
         setIsLoading(false);

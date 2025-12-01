@@ -1,14 +1,14 @@
-import { TopBar } from "@/components/top-bar"
-import { Header } from "@/components/header"
-import { HeroSection } from "@/components/hero-section"
-import { NewProductsSection } from "@/components/new-products-section"
-import { FeaturesSection } from "@/components/features-section"
-import { CategorySection } from "@/components/category-section"
-import { TrendingProducts } from "@/components/trending-products"
-import { FAQSection } from "@/components/faq-section"
-import { BlogSection } from "@/components/blog-section"
-import { BrandLogos } from "@/components/brand-logos"
-import { Footer } from "@/components/footer"
+import { TopBar } from '@/components/TopBar';
+import { Header } from '@/components/Header';
+import { HeroSection } from '@/components/HeroSection';
+import { NewProductsSection } from '@/components/NewProductsSection';
+import { FeaturesSection } from '@/components/FeaturesSection';
+import { CategorySection } from '@/components/CategorySection';
+import { TrendingProducts } from '@/components/TrendingProducts';
+import { FAQSection } from '@/components/FaqSection';
+import { BlogSection } from '@/components/BlogSection';
+import { BrandLogos } from '@/components/BrandLogos';
+import { Footer } from '@/components/Footer';
 
 export default function Home() {
   return (
@@ -25,5 +25,5 @@ export default function Home() {
       <BrandLogos />
       <Footer />
     </main>
-  )
+  );
 }

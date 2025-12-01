@@ -1,4 +1,4 @@
-import { MapPinIcon, ChevronDownIcon } from "./icons"
+import { MapPinIcon, ChevronDownIcon } from './Icons';
 
 export function TopBar() {
   return (
@@ -24,5 +24,5 @@ export function TopBar() {
         </div>
       </div>
     </div>
-  )
+  );
 }

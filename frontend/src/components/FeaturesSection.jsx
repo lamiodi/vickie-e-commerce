@@ -1,22 +1,22 @@
-import { ArrowRightIcon, GlobeIcon, TruckIcon, ShieldCheckIcon } from "./icons"
+import { ArrowRightIcon, GlobeIcon, TruckIcon, ShieldCheckIcon } from './Icons';
 
 const features = [
   {
     icon: GlobeIcon,
-    title: "Worldwide Shipping",
+    title: 'Worldwide Shipping',
     description: "Doesn't matter wherever you are, we will always get your orders",
   },
   {
     icon: TruckIcon,
-    title: "Free Delivery",
-    description: "No more additional fees when you pay for what you want.",
+    title: 'Free Delivery',
+    description: 'No more additional fees when you pay for what you want.',
   },
   {
     icon: ShieldCheckIcon,
-    title: "Secure Transaction",
-    description: "We are perfect marketplace with 100% Safety guarantee",
+    title: 'Secure Transaction',
+    description: 'We are perfect marketplace with 100% Safety guarantee',
   },
-]
+];
 
 export function FeaturesSection() {
   return (
@@ -54,5 +54,5 @@ export function FeaturesSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

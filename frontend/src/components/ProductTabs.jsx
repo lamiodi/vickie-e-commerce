@@ -1,13 +1,13 @@
-import { useState } from "react"
+import { useState } from 'react';
 
 export function ProductTabs({ description, specifications, reviews }) {
-  const [activeTab, setActiveTab] = useState("description")
+  const [activeTab, setActiveTab] = useState('description');
 
   const tabs = [
-    { id: "description", label: "Description" },
-    { id: "specifications", label: "Specifications" },
-    { id: "reviews", label: `Reviews (${reviews.length})` },
-  ]
+    { id: 'description', label: 'Description' },
+    { id: 'specifications', label: 'Specifications' },
+    { id: 'reviews', label: `Reviews (${reviews.length})` },
+  ];
 
   return (
     <div>
@@ -18,24 +18,26 @@ export function ProductTabs({ description, specifications, reviews }) {
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-6 py-3 text-sm font-medium transition-colors relative ${
-              activeTab === tab.id ? "text-[#C41E3A]" : "text-gray-600 hover:text-gray-900"
+              activeTab === tab.id ? 'text-[#C41E3A]' : 'text-gray-600 hover:text-gray-900'
             }`}
           >
             {tab.label}
-            {activeTab === tab.id && <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C41E3A]" />}
+            {activeTab === tab.id && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#C41E3A]" />
+            )}
           </button>
         ))}
       </div>
 
       {/* Tab content */}
       <div className="py-6">
-        {activeTab === "description" && (
+        {activeTab === 'description' && (
           <div className="prose prose-sm max-w-none">
             <p className="text-gray-600 leading-relaxed">{description}</p>
           </div>
         )}
 
-        {activeTab === "specifications" && (
+        {activeTab === 'specifications' && (
           <div className="space-y-3">
             {specifications.map((spec, index) => (
               <div key={index} className="flex border-b border-gray-100 pb-3">
@@ -46,7 +48,7 @@ export function ProductTabs({ description, specifications, reviews }) {
           </div>
         )}
 
-        {activeTab === "reviews" && (
+        {activeTab === 'reviews' && (
           <div className="space-y-6">
             {reviews.map((review, index) => (
               <div key={index} className="border-b border-gray-100 pb-6">
@@ -61,7 +63,7 @@ export function ProductTabs({ description, specifications, reviews }) {
                         {[...Array(5)].map((_, i) => (
                           <svg
                             key={i}
-                            className={`w-3 h-3 ${i < review.rating ? "text-yellow-400" : "text-gray-300"}`}
+                            className={`w-3 h-3 ${i < review.rating ? 'text-yellow-400' : 'text-gray-300'}`}
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -80,5 +82,5 @@ export function ProductTabs({ description, specifications, reviews }) {
         )}
       </div>
     </div>
-  )
+  );
 }

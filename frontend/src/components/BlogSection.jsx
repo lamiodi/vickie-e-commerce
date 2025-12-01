@@ -1,31 +1,31 @@
-import { ArrowRightIcon, CalendarIcon, ChatBubbleIcon } from "./icons"
+import { ArrowRightIcon, CalendarIcon, ChatBubbleIcon } from './Icons';
 
 const articles = [
   {
     id: 1,
-    date: "June 2, 2024",
+    date: 'June 2, 2024',
     comments: 204,
-    title: "The Ultimate Guide to Choosing the Right Sportswear for Your Workout",
-    author: "Michael Davis",
-    image: "/placeholder.svg?height=200&width=350",
+    title: 'The Ultimate Guide to Choosing the Right Sportswear for Your Workout',
+    author: 'Michael Davis',
+    image: '/placeholder.svg?height=200&width=350',
   },
   {
     id: 2,
-    date: "May 15, 2024",
+    date: 'May 15, 2024',
     comments: 142,
-    title: "Mastering Your Sports Nutrition: Essential Tips for Optimal Performance",
-    author: "Sarah Thompson",
-    image: "/placeholder.svg?height=200&width=350",
+    title: 'Mastering Your Sports Nutrition: Essential Tips for Optimal Performance',
+    author: 'Sarah Thompson',
+    image: '/placeholder.svg?height=200&width=350',
   },
   {
     id: 3,
-    date: "May 8, 2024",
+    date: 'May 8, 2024',
     comments: 89,
-    title: "Staying Motivated: Strategies to Overcome Challenges in Fitness Journey",
-    author: "Emily Wilson",
-    image: "/placeholder.svg?height=200&width=350",
+    title: 'Staying Motivated: Strategies to Overcome Challenges in Fitness Journey',
+    author: 'Emily Wilson',
+    image: '/placeholder.svg?height=200&width=350',
   },
-]
+];
 
 export function BlogSection() {
   return (
@@ -42,7 +42,7 @@ export function BlogSection() {
           <article key={article.id} className="group">
             <div className="rounded-lg overflow-hidden mb-4 h-[200px]">
               <img
-                src={article.image || "/placeholder.svg"}
+                src={article.image || '/placeholder.svg'}
                 alt={article.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
@@ -65,5 +65,5 @@ export function BlogSection() {
         ))}
       </div>
     </section>
-  )
+  );
 }

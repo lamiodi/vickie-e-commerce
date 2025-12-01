@@ -9,10 +9,10 @@ const stripe = new Stripe(env.stripeSecret || 'sk_test_placeholder');
 
 router.post('/create-payment-intent', requireAuth, checkoutLimiter, async (req, res) => {
   const { amount, currency = 'usd' } = req.body;
-  
+
   try {
     if (!amount) {
-        return res.status(400).json({ error: "Amount is required" });
+      return res.status(400).json({ error: 'Amount is required' });
     }
 
     const paymentIntent = await stripe.paymentIntents.create({

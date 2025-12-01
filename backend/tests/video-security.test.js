@@ -3,12 +3,16 @@
  * Tests validation, error handling, and security measures
  */
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import { validateVideoURL, validateVideoMetadata, sanitizeVideoMetadata } from '../src/utils/validation.js';
+import { describe, it, expect } from '@jest/globals';
+import {
+  validateVideoURL,
+  validateVideoMetadata,
+  sanitizeVideoMetadata,
+} from '../src/utils/validation.js';
 
 /**
  * Security Audit Report for Product Video Implementation
- * 
+ *
  * 1. INPUT VALIDATION
  * ✓ URL format validation prevents malformed URLs
  * ✓ Protocol restriction to HTTPS only
@@ -17,28 +21,28 @@ import { validateVideoURL, validateVideoMetadata, sanitizeVideoMetadata } from '
  * ✓ Maximum URL length prevents buffer overflow
  * ✓ XSS prevention through character filtering
  * ✓ SQL injection prevention through parameterized queries
- * 
+ *
  * 2. ERROR HANDLING
  * ✓ Graceful degradation when video validation fails
  * ✓ Comprehensive error messages for debugging
  * ✓ Proper HTTP status codes for different error scenarios
  * ✓ Database constraint violations are handled
  * ✓ Network errors during video processing are caught
- * 
+ *
  * 3. PERFORMANCE & RESOURCE MANAGEMENT
  * ✓ Efficient database queries with proper indexing
  * ✓ Caching headers for video content (1 hour vs 2 hours)
  * ✓ Lazy loading of video metadata
  * ✓ Connection pooling for database operations
  * ✓ Rate limiting to prevent abuse
- * 
+ *
  * 4. DATA INTEGRITY
  * ✓ UUID validation prevents injection attacks
  * ✓ Transaction support for video updates
  * ✓ Audit trail for video changes
  * ✓ Data sanitization before storage
  * ✓ Constraint validation at database level
- * 
+ *
  * 5. ACCESS CONTROL
  * ✓ No sensitive video metadata exposed in public APIs
  * ✓ Proper authentication for admin video operations
@@ -53,10 +57,10 @@ describe('Video URL Validation Security Tests', () => {
       const validYouTubeURLs = [
         'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         'https://youtube.com/watch?v=dQw4w9WgXcQ',
-        'https://www.youtube.com/embed/dQw4w9WgXcQ'
+        'https://www.youtube.com/embed/dQw4w9WgXcQ',
       ];
 
-      validYouTubeURLs.forEach(url => {
+      validYouTubeURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(true);
         expect(result.type).toBe('youtube');
@@ -64,12 +68,9 @@ describe('Video URL Validation Security Tests', () => {
     });
 
     it('should accept valid Vimeo URLs', () => {
-      const validVimeoURLs = [
-        'https://vimeo.com/123456789',
-        'https://www.vimeo.com/123456789'
-      ];
+      const validVimeoURLs = ['https://vimeo.com/123456789', 'https://www.vimeo.com/123456789'];
 
-      validVimeoURLs.forEach(url => {
+      validVimeoURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(true);
         expect(result.type).toBe('vimeo');
@@ -81,10 +82,10 @@ describe('Video URL Validation Security Tests', () => {
         'https://example.com/video.mp4',
         'https://cdn.example.com/product.webm',
         'https://videos.example.com/demo.ogg',
-        'https://media.example.com/sample.mov'
+        'https://media.example.com/sample.mov',
       ];
 
-      validDirectURLs.forEach(url => {
+      validDirectURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(true);
         expect(result.type).toBe('direct');
@@ -98,10 +99,10 @@ describe('Video URL Validation Security Tests', () => {
         'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
         'ftp://example.com/video.mp4',
         'javascript:alert("XSS")',
-        'data:text/html,<script>alert("XSS")</script>'
+        'data:text/html,<script>alert("XSS")</script>',
       ];
 
-      insecureURLs.forEach(url => {
+      insecureURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(false);
         expect(result.error).toContain('HTTPS');
@@ -113,10 +114,10 @@ describe('Video URL Validation Security Tests', () => {
         'https://example.com/video.mp4<script>alert("XSS")</script>',
         'https://example.com/video.mp4<iframe src="javascript:alert(\'XSS\')"></iframe>',
         'https://example.com/video.mp4" onload="alert(\'XSS\')"',
-        'https://example.com/video.mp4\'; DROP TABLE products; --'
+        "https://example.com/video.mp4'; DROP TABLE products; --",
       ];
 
-      maliciousURLs.forEach(url => {
+      maliciousURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(false);
       });
@@ -126,10 +127,10 @@ describe('Video URL Validation Security Tests', () => {
       const traversalURLs = [
         'https://example.com/../etc/passwd',
         'https://example.com/video.mp4/../../../config',
-        'https://example.com/./././video.mp4'
+        'https://example.com/./././video.mp4',
       ];
 
-      traversalURLs.forEach(url => {
+      traversalURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(false);
       });
@@ -139,10 +140,10 @@ describe('Video URL Validation Security Tests', () => {
       const untrustedURLs = [
         'https://malicious-site.com/video.mp4',
         'https://phishing-site.youtube.com/watch?v=test',
-        'https://fake-vimeo.com/123456'
+        'https://fake-vimeo.com/123456',
       ];
 
-      untrustedURLs.forEach(url => {
+      untrustedURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(false);
       });
@@ -156,15 +157,9 @@ describe('Video URL Validation Security Tests', () => {
     });
 
     it('should reject malformed URLs', () => {
-      const malformedURLs = [
-        'not-a-url',
-        'https://',
-        'https://.com',
-        'https://example',
-        ''
-      ];
+      const malformedURLs = ['not-a-url', 'https://', 'https://.com', 'https://example', ''];
 
-      malformedURLs.forEach(url => {
+      malformedURLs.forEach((url) => {
         const result = validateVideoURL(url);
         expect(result.isValid).toBe(false);
       });
@@ -180,7 +175,7 @@ describe('Video Metadata Validation Security Tests', () => {
       height: 1080,
       format: 'mp4',
       position: 1,
-      fileSize: 10485760
+      fileSize: 10485760,
     };
 
     const result = validateVideoMetadata(validMetadata);
@@ -194,10 +189,10 @@ describe('Video Metadata Validation Security Tests', () => {
       { duration: 0 },
       { duration: 40000 }, // > 10 hours
       { duration: 'not-a-number' },
-      { duration: null }
+      { duration: null },
     ];
 
-    invalidDurations.forEach(metadata => {
+    invalidDurations.forEach((metadata) => {
       const result = validateVideoMetadata(metadata);
       expect(result.isValid).toBe(false);
       expect(result.errors).toBeDefined();
@@ -210,10 +205,10 @@ describe('Video Metadata Validation Security Tests', () => {
       { width: 1920, height: 0 },
       { width: 10000, height: 1080 }, // > 7680
       { width: 1920, height: 5000 }, // > 4320
-      { width: 'wide', height: 1080 }
+      { width: 'wide', height: 1080 },
     ];
 
-    invalidDimensions.forEach(metadata => {
+    invalidDimensions.forEach((metadata) => {
       const result = validateVideoMetadata(metadata);
       expect(result.isValid).toBe(false);
       expect(result.errors).toBeDefined();
@@ -225,10 +220,10 @@ describe('Video Metadata Validation Security Tests', () => {
       { fileSize: -1 },
       { fileSize: 0 },
       { fileSize: 2000000000 }, // > 1GB
-      { fileSize: 'large' }
+      { fileSize: 'large' },
     ];
 
-    invalidSizes.forEach(metadata => {
+    invalidSizes.forEach((metadata) => {
       const result = validateVideoMetadata(metadata);
       expect(result.isValid).toBe(false);
       expect(result.errors).toBeDefined();
@@ -240,10 +235,10 @@ describe('Video Metadata Validation Security Tests', () => {
       { format: 'exe' },
       { format: 'js' },
       { format: 'php' },
-      { format: '../../config' }
+      { format: '../../config' },
     ];
 
-    invalidFormats.forEach(metadata => {
+    invalidFormats.forEach((metadata) => {
       const result = validateVideoMetadata(metadata);
       expect(result.isValid).toBe(false);
       expect(result.errors).toBeDefined();
@@ -261,7 +256,7 @@ describe('Data Sanitization Security Tests', () => {
       position: 1.5,
       fileSize: 10485760.3,
       thumbnailUrl: 'javascript:alert("XSS")',
-      isExternal: 'true'
+      isExternal: 'true',
     };
 
     const sanitized = sanitizeVideoMetadata(maliciousMetadata);
@@ -280,15 +275,15 @@ describe('Data Sanitization Security Tests', () => {
 describe('Performance Impact Assessment', () => {
   it('should handle validation efficiently', () => {
     const startTime = Date.now();
-    
+
     // Test 1000 URL validations
     for (let i = 0; i < 1000; i++) {
       validateVideoURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ');
     }
-    
+
     const endTime = Date.now();
     const duration = endTime - startTime;
-    
+
     // Should complete 1000 validations in under 100ms
     expect(duration).toBeLessThan(100);
   });
@@ -300,19 +295,19 @@ describe('Performance Impact Assessment', () => {
       height: 1080,
       format: 'mp4',
       position: 1,
-      fileSize: 10485760
+      fileSize: 10485760,
     };
 
     const startTime = Date.now();
-    
+
     // Test 1000 metadata validations
     for (let i = 0; i < 1000; i++) {
       validateVideoMetadata(metadata);
     }
-    
+
     const endTime = Date.now();
     const duration = endTime - startTime;
-    
+
     // Should complete 1000 validations in under 50ms
     expect(duration).toBeLessThan(50);
   });
@@ -326,7 +321,7 @@ describe('Backward Compatibility Tests', () => {
       price: 99.99,
       description: 'Test description',
       category: 'electronics',
-      variants: []
+      variants: [],
     };
 
     // Should not break existing product structure
@@ -342,13 +337,13 @@ describe('Backward Compatibility Tests', () => {
       name: 'Test Product',
       price: 99.99,
       video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      video_position: 1
+      video_position: 1,
     };
 
     const productWithoutVideo = {
       id: '123e4567-e89b-12d3-a456-426614174001',
       name: 'Test Product 2',
-      price: 149.99
+      price: 149.99,
     };
 
     // Both should be valid product objects
@@ -370,7 +365,7 @@ export const securityAuditSummary = {
     'Add Content Security Policy headers for video content',
     'Consider implementing video content scanning for uploaded files',
     'Monitor for suspicious video URL patterns in production',
-    'Implement video access logging for audit purposes'
+    'Implement video access logging for audit purposes',
   ],
-  lastUpdated: new Date().toISOString()
+  lastUpdated: new Date().toISOString(),
 };

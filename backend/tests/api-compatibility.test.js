@@ -3,10 +3,10 @@ import request from 'supertest';
 
 // Mock the database pool
 jest.unstable_mockModule('../src/db/pool.js', () => ({
-  pool: { 
+  pool: {
     query: jest.fn(),
-    connect: jest.fn()
-  }
+    connect: jest.fn(),
+  },
 }));
 
 const { pool } = await import('../src/db/pool.js');
@@ -29,15 +29,13 @@ describe('API Backward Compatibility Tests', () => {
           name: 'Test Product',
           price: 99.99,
           images: ['image1.jpg', 'image2.jpg'],
-          variants: []
-        }
+          variants: [],
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
-      const response = await request(app)
-        .get('/api/products')
-        .expect(200);
+      const response = await request(app).get('/api/products').expect(200);
 
       expect(response.body).toHaveLength(1);
       expect(response.body[0]).not.toHaveProperty('video_url');
@@ -55,15 +53,13 @@ describe('API Backward Compatibility Tests', () => {
           name: 'Test Product',
           price: 99.99,
           images: ['image1.jpg', 'image2.jpg'],
-          variants: []
-        }
+          variants: [],
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
-      const response = await request(app)
-        .get('/api/products?include_videos=false')
-        .expect(200);
+      const response = await request(app).get('/api/products?include_videos=false').expect(200);
 
       expect(response.body).toHaveLength(1);
       expect(response.body[0]).not.toHaveProperty('video_url');
@@ -87,15 +83,13 @@ describe('API Backward Compatibility Tests', () => {
           video_height: 1080,
           video_thumbnail_url: 'https://example.com/video-thumb.jpg',
           video_file_size: 5242880,
-          video_is_external: true
-        }
+          video_is_external: true,
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
-      const response = await request(app)
-        .get('/api/products?include_videos=true')
-        .expect(200);
+      const response = await request(app).get('/api/products?include_videos=true').expect(200);
 
       expect(response.body).toHaveLength(1);
       expect(response.body[0]).toHaveProperty('video_url', 'https://example.com/video.mp4');
@@ -114,15 +108,17 @@ describe('API Backward Compatibility Tests', () => {
           price: 99.99,
           category: 'electronics',
           images: ['image1.jpg'],
-          variants: []
-        }
+          variants: [],
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
       // Test with existing parameters
       const response = await request(app)
-        .get('/api/products?q=Test&category=electronics&min=50&max=200&sort=price_asc&page=1&limit=10')
+        .get(
+          '/api/products?q=Test&category=electronics&min=50&max=200&sort=price_asc&page=1&limit=10'
+        )
         .expect(200);
 
       expect(response.body).toHaveLength(1);
@@ -148,14 +144,12 @@ describe('API Backward Compatibility Tests', () => {
         video_height: 1080,
         video_thumbnail_url: 'https://example.com/video-thumb.jpg',
         video_file_size: 5242880,
-        video_is_external: true
+        video_is_external: true,
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
 
-      const response = await request(app)
-        .get('/api/products/1')
-        .expect(200);
+      const response = await request(app).get('/api/products/1').expect(200);
 
       // By default, single product view includes video data
       expect(response.body).toHaveProperty('video_url', 'https://example.com/video.mp4');
@@ -175,14 +169,12 @@ describe('API Backward Compatibility Tests', () => {
         video_url: 'https://example.com/video.mp4',
         video_position: 1,
         video_duration: 120,
-        video_format: 'mp4'
+        video_format: 'mp4',
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
 
-      const response = await request(app)
-        .get('/api/products/1?include_videos=false')
-        .expect(200);
+      const response = await request(app).get('/api/products/1?include_videos=false').expect(200);
 
       expect(response.body).not.toHaveProperty('video_url');
       expect(response.body).not.toHaveProperty('video_position');
@@ -192,9 +184,7 @@ describe('API Backward Compatibility Tests', () => {
     });
 
     it('should handle invalid product ID format gracefully', async () => {
-      const response = await request(app)
-        .get('/api/products/invalid-id')
-        .expect(400);
+      const response = await request(app).get('/api/products/invalid-id').expect(400);
 
       expect(response.body).toHaveProperty('error', 'invalid_id');
       expect(response.body).toHaveProperty('message', 'Invalid product ID format');
@@ -227,16 +217,14 @@ describe('API Backward Compatibility Tests', () => {
             id: 'v1',
             name: 'Red Variant',
             price: 99.99,
-            stock: 5
-          }
-        ]
+            stock: 5,
+          },
+        ],
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
 
-      const response = await request(app)
-        .get('/api/products/1?include_videos=false')
-        .expect(200);
+      const response = await request(app).get('/api/products/1?include_videos=false').expect(200);
 
       // Verify all existing fields are present
       expect(response.body).toHaveProperty('id');
@@ -247,7 +235,7 @@ describe('API Backward Compatibility Tests', () => {
       expect(response.body).toHaveProperty('images');
       expect(response.body).toHaveProperty('stock');
       expect(response.body).toHaveProperty('variants');
-      
+
       // Verify variants structure
       expect(Array.isArray(response.body.variants)).toBe(true);
       expect(response.body.variants[0]).toHaveProperty('id');
@@ -261,9 +249,7 @@ describe('API Backward Compatibility Tests', () => {
     it('should maintain consistent error response format', async () => {
       pool.query.mockRejectedValue(new Error('Database connection error'));
 
-      const response = await request(app)
-        .get('/api/products')
-        .expect(500);
+      const response = await request(app).get('/api/products').expect(500);
 
       expect(response.body).toHaveProperty('error', 'internal_server_error');
       expect(response.body).toHaveProperty('message', 'Failed to fetch products');
@@ -272,9 +258,7 @@ describe('API Backward Compatibility Tests', () => {
     it('should maintain consistent error format for single product endpoint', async () => {
       pool.query.mockRejectedValue(new Error('Database connection error'));
 
-      const response = await request(app)
-        .get('/api/products/1')
-        .expect(500);
+      const response = await request(app).get('/api/products/1').expect(500);
 
       expect(response.body).toHaveProperty('error', 'internal_server_error');
       expect(response.body).toHaveProperty('message', 'Failed to fetch product details');

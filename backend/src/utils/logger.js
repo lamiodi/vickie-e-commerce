@@ -7,7 +7,7 @@ const LOG_LEVELS = {
   ERROR: 0,
   WARN: 1,
   INFO: 2,
-  DEBUG: 3
+  DEBUG: 3,
 };
 
 const CURRENT_LOG_LEVEL = process.env.LOG_LEVEL || 'INFO';
@@ -25,9 +25,9 @@ function formatLogMessage(level, message, metadata = {}) {
     timestamp,
     level,
     message,
-    ...metadata
+    ...metadata,
   };
-  
+
   return JSON.stringify(logEntry);
 }
 
@@ -93,7 +93,7 @@ export const logger = {
   error,
   warn,
   info,
-  debug
+  debug,
 };
 
 export default logger;

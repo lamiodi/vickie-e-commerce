@@ -1,5 +1,5 @@
 export function BrandLogos() {
-  const brands = ["Olukai", "Swift", "SPORTS", "Nike", "Puma"]
+  const brands = ['Olukai', 'Swift', 'SPORTS', 'Nike', 'Puma'];
 
   return (
     <section className="border-y border-gray-200 py-8">
@@ -13,5 +13,5 @@ export function BrandLogos() {
         </div>
       </div>
     </section>
-  )
+  );
 }

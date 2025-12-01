@@ -1,23 +1,23 @@
-import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from "./icons"
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon } from './Icons';
 
 export function ProductsPagination({ currentPage, totalPages, onPageChange }) {
   const getVisiblePages = () => {
-    const pages = []
+    const pages = [];
 
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
-        pages.push(i)
+        pages.push(i);
       }
     } else {
-      pages.push(1, 2, 3)
+      pages.push(1, 2, 3);
       if (totalPages > 4) {
-        pages.push("...")
-        pages.push(totalPages)
+        pages.push('...');
+        pages.push(totalPages);
       }
     }
 
-    return pages
-  }
+    return pages;
+  };
 
   return (
     <div className="flex items-center justify-center gap-1 py-8">
@@ -35,10 +35,14 @@ export function ProductsPagination({ currentPage, totalPages, onPageChange }) {
       {getVisiblePages().map((page, index) => (
         <button
           key={index}
-          onClick={() => typeof page === "number" && onPageChange(page)}
-          disabled={page === "..."}
+          onClick={() => typeof page === 'number' && onPageChange(page)}
+          disabled={page === '...'}
           className={`min-w-[36px] h-9 px-3 rounded text-sm font-medium transition-colors ${
-            page === currentPage ? "bg-[#1a1a1a] text-white" : page === "..." ? "cursor-default" : "hover:bg-gray-100"
+            page === currentPage
+              ? 'bg-[#1a1a1a] text-white'
+              : page === '...'
+                ? 'cursor-default'
+                : 'hover:bg-gray-100'
           }`}
         >
           {page}
@@ -65,5 +69,5 @@ export function ProductsPagination({ currentPage, totalPages, onPageChange }) {
         <ChevronsRightIcon className="w-4 h-4" />
       </button>
     </div>
-  )
+  );
 }

@@ -20,7 +20,7 @@ export function validateVideoURL(url) {
 
   try {
     const parsedUrl = new URL(url);
-    
+
     // Only allow HTTPS for security
     if (parsedUrl.protocol !== 'https:') {
       return { isValid: false, error: 'Video URL must use HTTPS protocol' };
@@ -34,17 +34,17 @@ export function validateVideoURL(url) {
       'vimeo.com',
       'www.vimeo.com',
       'dailymotion.com',
-      'www.dailymotion.com'
+      'www.dailymotion.com',
     ];
 
     // Check if it's a trusted video platform
-    const isTrustedPlatform = trustedDomains.some(domain => 
-      parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`)
+    const isTrustedPlatform = trustedDomains.some(
+      (domain) => parsedUrl.hostname === domain || parsedUrl.hostname.endsWith(`.${domain}`)
     );
 
     // Direct video file extensions
     const videoExtensions = ['.mp4', '.webm', '.ogg', '.mov'];
-    const hasVideoExtension = videoExtensions.some(ext => 
+    const hasVideoExtension = videoExtensions.some((ext) =>
       parsedUrl.pathname.toLowerCase().endsWith(ext)
     );
 
@@ -61,10 +61,12 @@ export function validateVideoURL(url) {
       // Validate direct video file URLs
       return validateDirectVideoURL(parsedUrl);
     } else {
-      return { isValid: false, error: 'Video URL must be from a trusted platform or have a valid video file extension' };
+      return {
+        isValid: false,
+        error: 'Video URL must be from a trusted platform or have a valid video file extension',
+      };
     }
-
-  } catch (error) {
+  } catch {
     return { isValid: false, error: 'Invalid video URL format' };
   }
 }
@@ -76,8 +78,8 @@ export function validateVideoURL(url) {
  */
 function validateYouTubeURL(url) {
   const validPaths = ['/watch', '/embed/'];
-  const hasValidPath = validPaths.some(path => url.pathname.startsWith(path));
-  
+  const hasValidPath = validPaths.some((path) => url.pathname.startsWith(path));
+
   if (!hasValidPath) {
     return { isValid: false, error: 'Invalid YouTube video URL format' };
   }
@@ -104,7 +106,7 @@ function validateYouTubeURL(url) {
  */
 function validateVimeoURL(url) {
   const vimeoIdMatch = url.pathname.match(/^\/([0-9]+)$/);
-  
+
   if (!vimeoIdMatch) {
     return { isValid: false, error: 'Invalid Vimeo video URL format' };
   }
@@ -125,15 +127,13 @@ function validateVimeoURL(url) {
 function validateDirectVideoURL(url) {
   // Additional security checks for direct video files
   const suspiciousPatterns = [
-    /\.{2,}/,  // Prevent directory traversal
-    /[<>'"]/,  // Prevent XSS attempts
-    /\s/,      // No whitespace allowed
-    /[;&|`]/   // Prevent command injection
+    /\.{2,}/, // Prevent directory traversal
+    /[<>'"]/, // Prevent XSS attempts
+    /\s/, // No whitespace allowed
+    /[;&|`]/, // Prevent command injection
   ];
 
-  const hasSuspiciousPattern = suspiciousPatterns.some(pattern => 
-    pattern.test(url.href)
-  );
+  const hasSuspiciousPattern = suspiciousPatterns.some((pattern) => pattern.test(url.href));
 
   if (hasSuspiciousPattern) {
     return { isValid: false, error: 'Video URL contains suspicious characters' };
@@ -154,7 +154,8 @@ export function validateVideoMetadata(metadata) {
   if (metadata.duration !== undefined && metadata.duration !== null) {
     if (typeof metadata.duration !== 'number' || metadata.duration <= 0) {
       errors.push('Video duration must be a positive number');
-    } else if (metadata.duration > 36000) { // Max 10 hours
+    } else if (metadata.duration > 36000) {
+      // Max 10 hours
       errors.push('Video duration cannot exceed 10 hours');
     }
   }
@@ -189,14 +190,19 @@ export function validateVideoMetadata(metadata) {
 
   // Validate file size
   if (metadata.fileSize !== undefined && metadata.fileSize !== null) {
-    if (typeof metadata.fileSize !== 'number' || metadata.fileSize <= 0 || metadata.fileSize > 1073741824) { // 1GB
+    if (
+      typeof metadata.fileSize !== 'number' ||
+      metadata.fileSize <= 0 ||
+      metadata.fileSize > 1073741824
+    ) {
+      // 1GB
       errors.push('Video file size must be a positive number not exceeding 1GB');
     }
   }
 
   return {
     isValid: errors.length === 0,
-    errors: errors.length > 0 ? errors : undefined
+    errors: errors.length > 0 ? errors : undefined,
   };
 }
 

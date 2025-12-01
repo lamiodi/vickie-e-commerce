@@ -1,4 +1,5 @@
-import { ArrowRightIcon } from "./icons"
+import { Link } from 'react-router-dom';
+import { ArrowRightIcon } from './Icons';
 
 export function HeroSection() {
   return (
@@ -6,7 +7,11 @@ export function HeroSection() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Main Hero */}
         <div className="lg:col-span-2 relative rounded-lg overflow-hidden h-[400px] lg:h-[480px]">
-          <img src="/basketball-hoop-close-up-with-orange-basketball-go.jpg" alt="Basketball" className="w-full h-full object-cover" />
+          <img
+            src="/basketball-hoop-close-up-with-orange-basketball-go.jpg"
+            alt="Basketball"
+            className="w-full h-full object-cover"
+          />
           <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/30 to-transparent" />
           <div className="absolute bottom-8 left-8 text-white max-w-sm">
             <p className="text-xs tracking-widest mb-2 opacity-80">THE ORIGINAL</p>
@@ -20,9 +25,12 @@ export function HeroSection() {
               <br />
               with our selected items
             </p>
-            <button className="bg-[#C41E3A] hover:bg-[#a3182f] text-white px-6 py-3 text-sm font-medium transition-colors">
+            <Link
+              to="/products?category=Basketball"
+              className="inline-block bg-[#C41E3A] hover:bg-[#a3182f] text-white px-6 py-3 text-sm font-medium transition-colors"
+            >
               SHOP NOW
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -42,9 +50,12 @@ export function HeroSection() {
                 <br />
                 TRACKER WATCH
               </h3>
-              <a href="#" className="text-xs flex items-center gap-1 hover:text-[#C41E3A] transition-colors">
+              <Link
+                to="/products?q=watch"
+                className="text-xs flex items-center gap-1 hover:text-[#C41E3A] transition-colors"
+              >
                 Shop Now <ArrowRightIcon className="w-3 h-3" />
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -59,7 +70,11 @@ export function HeroSection() {
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">From $29.00</p>
               </div>
-              <img src="/black-sports-duffel-bag-gym-bag-modern-design.jpg" alt="Duffel Bag" className="w-16 h-12 object-contain" />
+              <img
+                src="/black-sports-duffel-bag-gym-bag-modern-design.jpg"
+                alt="Duffel Bag"
+                className="w-16 h-12 object-contain"
+              />
             </div>
           </div>
 
@@ -74,7 +89,11 @@ export function HeroSection() {
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">From $95.00</p>
               </div>
-              <img src="/red-black-running-shoes-athletic-sneakers-modern-d.jpg" alt="Running Shoes" className="w-16 h-12 object-contain" />
+              <img
+                src="/red-black-running-shoes-athletic-sneakers-modern-d.jpg"
+                alt="Running Shoes"
+                className="w-16 h-12 object-contain"
+              />
             </div>
           </div>
 
@@ -89,11 +108,15 @@ export function HeroSection() {
                 </h3>
                 <p className="text-xs text-gray-500 mt-1">$44.00 $52</p>
               </div>
-              <img src="/red-trucker-cap-baseball-hat-sports-accessory.jpg" alt="Trucker Hat" className="w-16 h-12 object-contain" />
+              <img
+                src="/red-trucker-cap-baseball-hat-sports-accessory.jpg"
+                alt="Trucker Hat"
+                className="w-16 h-12 object-contain"
+              />
             </div>
           </div>
         </div>
       </div>
     </section>
-  )
+  );
 }

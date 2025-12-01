@@ -1,4 +1,5 @@
-:root {}
+:root {
+}
 
 .textBlock {
   max-width: 60ch;
@@ -11,8 +12,14 @@
 }
 
 .shadowElevated {
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.radius4 { border-radius: 4px; }
-.radius8 { border-radius: 8px; }
+.radius4 {
+  border-radius: 4px;
+}
+.radius8 {
+  border-radius: 8px;
+}

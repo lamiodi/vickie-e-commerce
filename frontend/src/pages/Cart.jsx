@@ -1,52 +1,52 @@
-import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
-import { TopBar } from "@/components/top-bar"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
-import { BrandLogos } from "@/components/brand-logos"
-import { CartItem } from "@/components/cart-item"
-import { OrderSummary } from "@/components/order-summary"
-import { ProductCard } from "@/components/product-card"
-import { HomeIcon, ChevronRightIcon, ShoppingCartIcon } from "@/components/icons"
-import { useCart } from "@/lib/cart"
-import { api } from "@/lib/api"
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { TopBar } from '@/components/TopBar';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { BrandLogos } from '@/components/BrandLogos';
+import { CartItem } from '@/components/CartItem';
+import { OrderSummary } from '@/components/OrderSummary';
+import { ProductCard } from '@/components/ProductCard';
+import { HomeIcon, ChevronRightIcon, ShoppingCartIcon } from '@/components/Icons';
+import { useCart } from '@/lib/cart';
+import { api } from '@/lib/api';
 
 export default function Cart() {
-  const { items: cartItems, updateQty, removeItem, clearCart } = useCart()
-  const [recommendedProducts, setRecommendedProducts] = useState([])
+  const { items: cartItems, updateQty, removeItem, clearCart } = useCart();
+  const [recommendedProducts, setRecommendedProducts] = useState([]);
 
   useEffect(() => {
     const fetchRecommended = async () => {
-        try {
-            const response = await api.get('/products/recommended')
-            if (response.data) {
-                setRecommendedProducts(response.data)
-            }
-        } catch (error) {
-            console.log("Failed to fetch recommended products, using defaults if any")
-            // Fallback or empty
+      try {
+        const response = await api.get('/products/recommended');
+        if (response.data) {
+          setRecommendedProducts(response.data);
         }
-    }
-    fetchRecommended()
-  }, [])
+      } catch {
+        // Fallback or empty
+      }
+    };
+    fetchRecommended();
+  }, []);
 
   const handleQuantityChange = (id, quantity) => {
-    updateQty(id, quantity)
-  }
+    updateQty(id, quantity);
+  };
 
   const handleRemove = (id) => {
-    removeItem(id)
-  }
+    removeItem(id);
+  };
 
   // In useCart, price might be string or number, ensure safe math
   const subtotal = cartItems.reduce((sum, item) => {
-    const price = typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price
-    return sum + price * item.qty
-  }, 0)
-  
-  const shipping = subtotal > 100 ? 0 : 9.99
-  const tax = subtotal * 0.08
-  const total = subtotal + shipping + tax
+    const price =
+      typeof item.price === 'string' ? parseFloat(item.price.replace('$', '')) : item.price;
+    return sum + price * item.qty;
+  }, 0);
+
+  const shipping = subtotal > 100 ? 0 : 9.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
 
   return (
     <div className="min-h-screen bg-white">
@@ -57,7 +57,10 @@ export default function Cart() {
       <div className="bg-gray-50 border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 py-3">
           <nav className="flex items-center gap-2 text-sm" aria-label="Breadcrumb">
-            <Link to="/" className="flex items-center gap-1 text-gray-500 hover:text-[#C41E3A] transition-colors">
+            <Link
+              to="/"
+              className="flex items-center gap-1 text-gray-500 hover:text-[#C41E3A] transition-colors"
+            >
               <HomeIcon className="w-4 h-4" />
               Home
             </Link>
@@ -80,7 +83,9 @@ export default function Cart() {
               <ShoppingCartIcon className="w-10 h-10 text-gray-400" />
             </div>
             <h2 className="text-xl font-bold mb-2">Your cart is empty</h2>
-            <p className="text-gray-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
+            <p className="text-gray-500 mb-8">
+              Looks like you haven&apos;t added anything to your cart yet.
+            </p>
             <Link
               to="/products"
               className="inline-block bg-[#C41E3A] hover:bg-[#a3182f] text-white font-medium py-3 px-8 rounded-lg transition-colors"
@@ -102,14 +107,17 @@ export default function Cart() {
                   {cartItems.map((item) => (
                     <CartItem
                       key={item.id}
-                      item={{...item, quantity: item.qty}} // mapping qty to quantity for CartItem component
+                      item={{ ...item, quantity: item.qty }} // mapping qty to quantity for CartItem component
                       onQuantityChange={handleQuantityChange}
                       onRemove={handleRemove}
                     />
                   ))}
                 </div>
                 <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
-                  <Link to="/products" className="text-sm font-medium text-[#C41E3A] hover:underline">
+                  <Link
+                    to="/products"
+                    className="text-sm font-medium text-[#C41E3A] hover:underline"
+                  >
                     ← Continue Shopping
                   </Link>
                   <button
@@ -131,21 +139,21 @@ export default function Cart() {
 
         {/* Recommended Products */}
         {recommendedProducts.length > 0 && (
-        <div>
-          <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {recommendedProducts.map((product) => (
-              <Link key={product.id} to={`/products/${product.id}`}>
-                <ProductCard product={product} />
-              </Link>
-            ))}
+          <div>
+            <h2 className="text-2xl font-bold mb-6">You May Also Like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {recommendedProducts.map((product) => (
+                <Link key={product.id} to={`/products/${product.id}`}>
+                  <ProductCard product={product} />
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
         )}
       </div>
 
       <BrandLogos />
       <Footer />
     </div>
-  )
+  );
 }

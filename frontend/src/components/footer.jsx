@@ -1,4 +1,4 @@
-import { MapPinIcon, PhoneIcon } from "./icons"
+import { MapPinIcon, PhoneIcon } from './Icons';
 
 export function Footer() {
   return (
@@ -11,10 +11,13 @@ export function Footer() {
               SPORT<span className="text-[#C41E3A]">Z</span>Y
             </a>
             <p className="text-xs text-gray-500 mb-4 leading-relaxed">
-              All content on this website is protected by copyright and may not be used without permission from Sportzy.
-              For more information about our Privacy Policy, please contact our Support Center.
+              All content on this website is protected by copyright and may not be used without
+              permission from Sportzy. For more information about our Privacy Policy, please contact
+              our Support Center.
             </p>
-            <p className="text-xs text-gray-400 mb-6">Copyright © 2025 Sportzy. All Rights Reserved.</p>
+            <p className="text-xs text-gray-400 mb-6">
+              Copyright © 2025 Sportzy. All Rights Reserved.
+            </p>
 
             <div>
               <h4 className="font-bold text-sm mb-3">Get Our Updates</h4>
@@ -46,7 +49,12 @@ export function Footer() {
               <span>+1 (302) 555-0124</span>
             </div>
             <div className="flex items-center gap-2 text-sm">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -104,5 +112,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  )
+  );
 }

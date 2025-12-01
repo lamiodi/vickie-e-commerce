@@ -1,8 +1,8 @@
-import { ChevronDownIcon, GridIcon, ListIcon } from "./icons"
+import { ChevronDownIcon, GridIcon, ListIcon } from './Icons';
 
 export function ProductsFilterBar({ totalResults, currentPage, pageSize }) {
-  const startItem = (currentPage - 1) * pageSize + 1
-  const endItem = Math.min(currentPage * pageSize, totalResults)
+  const startItem = (currentPage - 1) * pageSize + 1;
+  const endItem = Math.min(currentPage * pageSize, totalResults);
 
   return (
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-4 border-b border-gray-200">
@@ -49,5 +49,5 @@ export function ProductsFilterBar({ totalResults, currentPage, pageSize }) {
         </button>
       </div>
     </div>
-  )
+  );
 }

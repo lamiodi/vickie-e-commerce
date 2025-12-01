@@ -3,10 +3,10 @@ import request from 'supertest';
 
 // Mock the database pool
 jest.unstable_mockModule('../src/db/pool.js', () => ({
-  pool: { 
+  pool: {
     query: jest.fn(),
-    connect: jest.fn()
-  }
+    connect: jest.fn(),
+  },
 }));
 
 const { pool } = await import('../src/db/pool.js');
@@ -24,15 +24,13 @@ describe('Video Integration Performance Tests', () => {
         name: `Product ${i + 1}`,
         price: 99.99 + i,
         images: [`image${i}.jpg`],
-        variants: []
+        variants: [],
       }));
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
       const startTime = Date.now();
-      const response = await request(app)
-        .get('/api/products')
-        .expect(200);
+      const response = await request(app).get('/api/products').expect(200);
       const endTime = Date.now();
 
       expect(response.status).toBe(200);
@@ -55,15 +53,13 @@ describe('Video Integration Performance Tests', () => {
         video_height: 1080,
         video_thumbnail_url: `https://example.com/video-thumb${i}.jpg`,
         video_file_size: 5242880,
-        video_is_external: true
+        video_is_external: true,
       }));
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
       const startTime = Date.now();
-      const response = await request(app)
-        .get('/api/products?include_videos=true')
-        .expect(200);
+      const response = await request(app).get('/api/products?include_videos=true').expect(200);
       const endTime = Date.now();
 
       expect(response.status).toBe(200);
@@ -86,7 +82,7 @@ describe('Video Integration Performance Tests', () => {
         video_height: 1080,
         video_thumbnail_url: 'https://example.com/video-thumb.jpg',
         video_file_size: 5242880,
-        video_is_external: true
+        video_is_external: true,
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
@@ -115,8 +111,8 @@ describe('Video Integration Performance Tests', () => {
           video_url: 'https://example.com/video.mp4',
           video_position: 1,
           video_duration: 120,
-          video_format: 'mp4'
-        }
+          video_format: 'mp4',
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
@@ -143,8 +139,8 @@ describe('Video Integration Performance Tests', () => {
           name: 'Test Product',
           price: 99.99,
           images: ['image1.jpg'],
-          variants: []
-        }
+          variants: [],
+        },
       ];
 
       pool.query.mockResolvedValue({ rows: mockProducts });
@@ -176,7 +172,7 @@ describe('Video Integration Performance Tests', () => {
         updated_at: '2024-11-22T10:00:00Z',
         video_url: 'https://example.com/video.mp4',
         video_position: 1,
-        video_duration: 120
+        video_duration: 120,
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
@@ -198,7 +194,7 @@ describe('Video Integration Performance Tests', () => {
         price: 99.99,
         images: ['image1.jpg'],
         variants: [],
-        updated_at: '2024-11-22T10:00:00Z'
+        updated_at: '2024-11-22T10:00:00Z',
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
@@ -220,7 +216,7 @@ describe('Video Integration Performance Tests', () => {
         price: 99.99,
         images: ['image1.jpg'],
         variants: [],
-        updated_at: '2024-11-22T10:00:00Z'
+        updated_at: '2024-11-22T10:00:00Z',
       };
 
       const productWithVideo = {
@@ -233,7 +229,7 @@ describe('Video Integration Performance Tests', () => {
         video_height: 1080,
         video_thumbnail_url: 'https://example.com/video-thumb.jpg',
         video_file_size: 5242880,
-        video_is_external: true
+        video_is_external: true,
       };
 
       pool.query
@@ -271,15 +267,15 @@ describe('Video Integration Performance Tests', () => {
         variants: [],
         video_url: `https://example.com/video${i}.mp4`,
         video_position: 1,
-        video_duration: 120 + i
+        video_duration: 120 + i,
       }));
 
       pool.query.mockResolvedValue({ rows: mockProducts });
 
       const startTime = Date.now();
-      
+
       // Make 10 concurrent requests
-      const requests = Array.from({ length: 10 }, (_, i) => 
+      const requests = Array.from({ length: 10 }, (_, i) =>
         request(app)
           .get(`/api/products/550e8400-e29b-41d4-a716-4466554400${String(i + 1).padStart(2, '0')}`)
           .expect(200)
@@ -304,7 +300,7 @@ describe('Video Integration Performance Tests', () => {
         updated_at: '2024-11-22T10:00:00Z',
         video_url: 'https://example.com/video.mp4',
         video_position: 1,
-        video_duration: 120
+        video_duration: 120,
       };
 
       pool.query.mockResolvedValue({ rows: [mockProduct] });
@@ -315,13 +311,13 @@ describe('Video Integration Performance Tests', () => {
 
       // Verify caching is implemented
       expect(response.headers).toHaveProperty('cache-control');
-      
+
       // Verify response structure is optimized
       expect(response.body).toHaveProperty('id');
       expect(response.body).toHaveProperty('name');
       expect(response.body).toHaveProperty('video_url');
       expect(response.body).toHaveProperty('video_duration');
-      
+
       // Verify no unnecessary fields are included
       expect(response.body).not.toHaveProperty('unnecessary_field');
     });
