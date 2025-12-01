@@ -1,5 +1,0 @@
-import { api, setAccessToken } from "./api.js";
-export const register = async (data) => (await api.post("/auth/register", data)).data;
-export const login = async (data) => { const res = await api.post("/auth/login", data); setAccessToken(res.data.access); return res.data; };
-export const refresh = async () => { const res = await api.post("/auth/refresh"); setAccessToken(res.data.access); return res.data; };
-export const meOrders = async () => (await api.get("/orders/mine")).data;
