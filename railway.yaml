@@ -1,0 +1,26 @@
+name: vickie-ecom
+services:
+  - name: backend
+    type: web
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: DATABASE_URL
+        value: ""
+      - key: JWT_ACCESS_SECRET
+        value: ""
+      - key: JWT_REFRESH_SECRET
+        value: ""
+      - key: STRIPE_SECRET_KEY
+        value: ""
+      - key: STRIPE_WEBHOOK_SECRET
+        value: ""
+      - key: SENDGRID_API_KEY
+        value: ""
+      - key: EMAIL_FROM
+        value: ""
+      - key: APP_URL
+        value: ""
+      - key: CORS_ORIGIN
+        value: ""

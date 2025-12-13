@@ -1,0 +1,52 @@
+export const COLOR_MAP = {
+  Black: '#000000',
+  White: '#FFFFFF',
+  Grey: '#808080',
+  'Light Grey': '#D3D3D3',
+  'Dark Grey': '#A9A9A9',
+  Navy: '#000080',
+  Blue: '#0000FF',
+  'Sky Blue': '#87CEEB',
+  'Baby Blue': '#89CFF0',
+  'Royal Blue': '#4169E1',
+  Teal: '#008080',
+  Turquoise: '#40E0D0',
+  Red: '#FF0000',
+  Burgundy: '#800020',
+  Wine: '#722F37',
+  Maroon: '#800000',
+  Pink: '#FFC0CB',
+  'Hot Pink': '#FF69B4',
+  Blush: '#DE5D83',
+  Purple: '#800080',
+  Lavender: '#E6E6FA',
+  Lilac: '#C8A2C8',
+  Green: '#008000',
+  Olive: '#808000',
+  'Army Green': '#4B5320',
+  'Forest Green': '#228B22',
+  Emerald: '#50C878',
+  Mint: '#3EB489',
+  Sage: '#BCB88A',
+  Yellow: '#FFFF00',
+  Mustard: '#FFDB58',
+  Orange: '#FFA500',
+  'Burnt Orange': '#CC5500',
+  Rust: '#B7410E',
+  Brown: '#A52A2A',
+  Chocolate: '#7B3F00',
+  Khaki: '#F0E68C',
+  Camel: '#C19A6B',
+  Beige: '#F5F5DC',
+  Cream: '#FFFDD0',
+  Ivory: '#FFFFF0',
+  Sand: '#C2B280',
+  Stone: '#888C8D',
+};
+
+export const getColorHex = (colorName) => {
+  if (!colorName) return '#CCCCCC'; // Default fallback
+  return COLOR_MAP[colorName] || colorName.toLowerCase();
+};
+
+export const COMMON_COLORS = COLOR_MAP;
