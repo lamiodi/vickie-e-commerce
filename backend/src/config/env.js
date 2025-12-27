@@ -32,6 +32,8 @@ export const env = {
   sendgridKey: process.env.SENDGRID_API_KEY,
   emailFrom: process.env.EMAIL_FROM,
   appUrl: process.env.APP_URL,
-  corsOrigin: process.env.CORS_ORIGIN || '*',
+  corsOrigin: process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim())
+    : '*',
   exchangeApiKey: process.env.EXCHANGE_API_KEY,
 };
