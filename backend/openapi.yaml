@@ -1,0 +1,453 @@
+openapi: 3.0.3
+info:
+  title: Vickie Ecom API
+  version: 1.0.0
+servers:
+  - url: /api
+paths:
+  /health:
+    get:
+      responses:
+        '200':
+          description: OK
+  /auth/register:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+                name: { type: string }
+      responses:
+        '200': { description: OK }
+  /media/products/{productId}/media:
+    post:
+      summary: Upload media for a product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                media:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: Array of image or video files to upload
+                  maxItems: 10
+                variantId:
+                  type: string
+                  format: uuid
+                  description: Optional variant ID to associate media with
+                altText:
+                  type: string
+                  description: Alternative text for accessibility
+                caption:
+                  type: string
+                  description: Media caption
+              required:
+                - media
+      responses:
+        '200':
+          description: Media uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  uploaded:
+                    type: integer
+                  media:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductMedia'
+    get:
+      summary: Get media for a product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [image, video]
+          description: Filter by media type
+      responses:
+        '200':
+          description: Media retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  media:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductMedia'
+  /media/products/{productId}/media/reorder:
+    post:
+      summary: Reorder media for a product
+      parameters:
+        - name: productId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mediaOrder:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  description: Array of media IDs in desired order
+              required:
+                - mediaOrder
+      responses:
+        '200':
+          description: Media reordered successfully
+  /media/media/{mediaId}:
+    patch:
+      summary: Update media metadata
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                altText:
+                  type: string
+                  description: Alternative text for accessibility
+                caption:
+                  type: string
+                  description: Media caption
+                displayOrder:
+                  type: integer
+                  description: Display order position
+                isPrimary:
+                  type: boolean
+                  description: Whether this is the primary media
+      responses:
+        '200':
+          description: Media updated successfully
+    delete:
+      summary: Delete media
+      parameters:
+        - name: mediaId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Media deleted successfully
+
+components:
+  schemas:
+    ProductMedia:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique media identifier
+        mediaType:
+          type: string
+          enum: [image, video]
+          description: Type of media
+        filePath:
+          type: string
+          description: Path to the processed media file
+        thumbnailPath:
+          type: string
+          description: Path to the thumbnail (for videos)
+        fileSize:
+          type: integer
+          description: File size in bytes
+        width:
+          type: integer
+          description: Width in pixels (for images/videos)
+        height:
+          type: integer
+          description: Height in pixels (for images/videos)
+        duration:
+          type: integer
+          description: Duration in seconds (for videos)
+        altText:
+          type: string
+          description: Alternative text for accessibility
+        caption:
+          type: string
+          description: Media caption
+        displayOrder:
+          type: integer
+          description: Display order position
+        isPrimary:
+          type: boolean
+          description: Whether this is the primary media
+        uploadedAt:
+          type: string
+          format: date-time
+          description: Upload timestamp
+        uploadedBy:
+          type: string
+          description: Name of user who uploaded
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique product identifier
+        name:
+          type: string
+          description: Product name
+        description:
+          type: string
+          description: Product description
+        category:
+          type: string
+          description: Product category
+        price:
+          type: number
+          format: float
+          description: Product price
+        attributes:
+          type: object
+          description: Additional product attributes
+        created_at:
+          type: string
+          format: date-time
+          description: Product creation timestamp
+        variants:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProductVariant'
+          description: Product variants
+
+    ProductVariant:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        product_id:
+          type: string
+          format: uuid
+        size:
+          type: string
+        color:
+          type: string
+        stock:
+          type: integer
+        images:
+          type: array
+          items:
+            type: string
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error code
+        message:
+          type: string
+          description: Human-readable error message
+      required:
+        - error
+        - message
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    ProductId:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Product unique identifier
+  /auth/login:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: { type: string }
+                password: { type: string }
+      responses:
+        '200': { description: OK }
+  /products:
+    get:
+      parameters:
+        - in: query
+          name: q
+          schema: { type: string }
+        - in: query
+          name: category
+          schema: { type: string }
+        - in: query
+          name: min
+          schema: { type: number }
+        - in: query
+          name: max
+          schema: { type: number }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [new, price_asc, price_desc] }
+        - in: query
+          name: page
+          schema: { type: integer }
+        - in: query
+          name: include_videos
+          schema: { type: boolean, default: false }
+          description: Include video metadata in response
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /products/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+        - in: query
+          name: include_videos
+          schema: { type: boolean, default: true }
+          description: Include video metadata in response
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Bad request - Invalid product ID format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /orders/mine:
+    get:
+      responses:
+        '200': { description: OK }
+  /orders/{id}:
+    get:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /checkout/create-payment-intent:
+    post:
+      responses:
+        '200': { description: OK }
+  /checkout/finalize:
+    post:
+      responses:
+        '200': { description: OK }
+  /webhooks/stripe:
+    post:
+      responses:
+        '200': { description: OK }
+  /admin/products:
+    post:
+      responses:
+        '200': { description: OK }
+  /admin/products/{id}/variants:
+    post:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /admin/orders/{id}/status:
+    patch:
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: string }
+      responses:
+        '200': { description: OK }

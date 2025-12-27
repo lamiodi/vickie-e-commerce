@@ -1,0 +1,20 @@
+{
+  "topbar": {
+    "track_order": "Track Your Order",
+    "address": "123 Main Street Chicago, IL 60614 United States"
+  },
+  "footer": {
+    "company": "Company",
+    "support": "Support",
+    "contact": "Contact",
+    "subscribe": "Get Our Updates",
+    "subscribe_btn": "Subscribe",
+    "email_placeholder": "Enter your email",
+    "privacy": "Privacy Policy",
+    "terms": "Terms & Conditions",
+    "sitemap": "Site Map"
+  },
+  "common": {
+    "loading": "Loading..."
+  }
+}

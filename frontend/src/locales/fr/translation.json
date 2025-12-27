@@ -1,0 +1,20 @@
+{
+  "topbar": {
+    "track_order": "Suivre votre commande",
+    "address": "123 Rue Principale Chicago, IL 60614 États-Unis"
+  },
+  "footer": {
+    "company": "Entreprise",
+    "support": "Support",
+    "contact": "Contact",
+    "subscribe": "Recevez nos mises à jour",
+    "subscribe_btn": "S'abonner",
+    "email_placeholder": "Entrez votre email",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Termes et Conditions",
+    "sitemap": "Plan du Site"
+  },
+  "common": {
+    "loading": "Chargement..."
+  }
+}

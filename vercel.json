@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "api": {
+      "runtime": "nodejs18",
+      "source": "backend",
+      "entryPoint": "app"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(**)", "function": "api" },
+    { "source": "/api/docs", "function": "api" },
+    { "source": "/api/openapi", "function": "api" },
+    { "source": "/(**)", "destination": "/index.html" }
+  ]
+}
